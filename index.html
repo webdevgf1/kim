@@ -465,28 +465,7 @@
     }
     
     .player-progress {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 4px;
-      background-color: #5e5e5e;
-      cursor: pointer;
-    }
-    
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: #b3b3b3;
-      transition: width 0.1s linear;
-    }
-    
-    .player-progress:hover {
-      height: 6px;
-    }
-    
-    .player-progress:hover .progress-bar {
-      background-color: #1DB954;
+      display: none; /* Hide this since we're using the new timeline */
     }
     
     .now-playing {
@@ -536,28 +515,80 @@
       margin-bottom: 8px;
     }
     
-    .control-buttons i {
-      color: #b3b3b3;
-      cursor: pointer;
-      font-size: 14px;
+    .player-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: 40%;
     }
     
-    .control-buttons i:hover {
-      color: #fff;
-    }
-    
-    .play-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: white;
-      border: none;
-      color: black;
+    .control-buttons {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 20px;
+      margin-bottom: 4px;
+    }
+    
+    .player-timeline-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 8px;
+    }
+    
+    .player-timeline {
+      flex: 1;
+      height: 4px;
+      background-color: #5e5e5e;
+      border-radius: 2px;
+      position: relative;
       cursor: pointer;
-      padding: 0;
+    }
+    
+    .timeline-progress {
+      height: 100%;
+      width: 0%;
+      background-color: #b3b3b3;
+      border-radius: 2px;
+      position: relative;
+    }
+    
+    .timeline-handle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%);
+      display: none;
+      cursor: grab;
+    }
+    
+    .player-timeline:hover {
+      height: 6px;
+    }
+    
+    .player-timeline:hover .timeline-progress {
+      background-color: #1DB954;
+    }
+    
+    .player-timeline:hover .timeline-handle {
+      display: block;
+    }
+    
+    #current-time, #song-duration {
+      font-size: 12px;
+      color: #b3b3b3;
+      min-width: 40px;
     }
     
     .player-timeline {
@@ -583,17 +614,37 @@
       border-radius: 2px;
     }
     
-    .volume-controls {
-      width: 30%;
+    .control-buttons i {
+      color: #b3b3b3;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .control-buttons i:hover {
+      color: #fff;
+    }
+    
+    .play-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      border: none;
+      color: black;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-left: auto;
-      justify-content: flex-end;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+    }
+    
+    .volume-slider-container {
+      position: relative;
+      width: 100px;
     }
     
     .volume-bar {
-      width: 100px;
+      width: 100%;
       height: 4px;
       background-color: #5e5e5e;
       border-radius: 2px;
@@ -609,12 +660,38 @@
       transition: width 0.1s ease;
     }
     
-    .volume-bar:hover .volume-progress {
-      background-color: #1DB954;
+    .volume-handle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      right: 30%; /* 100% - 70% (default volume) */
+      transform: translate(50%, -50%);
+      display: none;
+      cursor: grab;
     }
     
     .volume-bar:hover {
       height: 6px;
+    }
+    
+    .volume-bar:hover .volume-progress {
+      background-color: #1DB954;
+    }
+    
+    .volume-bar:hover .volume-handle {
+      display: block;
+    }
+    
+    .volume-controls {
+      width: 30%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      justify-content: flex-end;
     }
     
     /* Adding icons */
@@ -718,33 +795,33 @@
             <div class="song-artist">Kim Jong Un</div>
           </div>
         </div>
-        <div class="song-card" onclick="playSong('Rocket Man', 'Kim Jong Un', 'kim4.png', 'kim2.mp3')">
-            <div class="song-img-container">
-              <img src="images/kim4.png" alt="Rocket Man" class="song-img">
-            </div>
-            <div class="song-info-container">
-              <div class="song-title">Rocket Man</div>
-              <div class="song-artist">Kim Jong Un</div>
-            </div>
+        <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un', 'kim2.png', 'kim2.mp3')">
+          <div class="song-img-container">
+            <img src="images/kim2.png" alt="Towards Kim" class="song-img">
           </div>
-          <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.png', 'kim3.mp3')">
-            <div class="song-img-container">
-              <img src="images/kim3.png" alt="This Kim" class="song-img">
-            </div>
-            <div class="song-info-container">
-              <div class="song-title">This Kim</div>
-              <div class="song-artist">Kim Jong Un</div>
-            </div>
+          <div class="song-info-container">
+            <div class="song-title">Towards Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
           </div>
-          <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim2.png', 'kim4.mp3')">
-            <div class="song-img-container">
-              <img src="images/kim2.png" alt="That's Kim" class="song-img">
-            </div>
-            <div class="song-info-container">
-              <div class="song-title">That's Kim</div>
-              <div class="song-artist">Kim Jong Un</div>
-            </div>
+        </div>
+        <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.png', 'kim3.mp3')">
+          <div class="song-img-container">
+            <img src="images/kim3.png" alt="This Kim" class="song-img">
           </div>
+          <div class="song-info-container">
+            <div class="song-title">This Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
+        </div>
+        <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim4.png', 'kim4.mp3')">
+          <div class="song-img-container">
+            <img src="images/kim4.png" alt="That's Kim" class="song-img">
+          </div>
+          <div class="song-info-container">
+            <div class="song-title">That's Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
+        </div>
         <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un', 'kim5.png', 'kim5.mp3')">
           <div class="song-img-container">
             <img src="images/kim5.png" alt="Marry Kim" class="song-img">
@@ -828,12 +905,23 @@
         <i class="fas fa-step-forward"></i>
         <i class="fas fa-repeat"></i>
       </div>
+      <div class="player-timeline-container">
+        <span id="current-time">0:00</span>
+        <div class="player-timeline">
+          <div class="timeline-progress" id="song-progress"></div>
+          <div class="timeline-handle" id="progress-handle"></div>
+        </div>
+        <span id="song-duration">0:00</span>
+      </div>
     </div>
     
     <div class="volume-controls">
-      <i class="fas fa-volume-up"></i>
-      <div class="volume-bar">
-        <div class="volume-progress"></div>
+      <i class="fas fa-volume-up" id="volume-icon"></i>
+      <div class="volume-slider-container">
+        <div class="volume-bar">
+          <div class="volume-progress"></div>
+          <div class="volume-handle"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -856,6 +944,10 @@
     
     // Initialize volume
     audioPlayer.volume = 0.7; // 70% volume by default
+    
+    // Track whether we're dragging the timeline handle
+    let isDraggingProgress = false;
+    let isDraggingVolume = false;
     
     // Function to play a song
     function playSong(title, artist, imageFile, audioFile) {
@@ -908,55 +1000,156 @@
       playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
     }
     
-    // Update progress bar based on actual audio playback
+    // Format time in minutes:seconds
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      seconds = Math.floor(seconds % 60);
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Update progress bar and time displays based on actual audio playback
     audioPlayer.addEventListener('timeupdate', function() {
-      if (audioPlayer.duration) {
+      if (audioPlayer.duration && !isDraggingProgress) {
         const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        document.getElementById('song-progress').style.width = `${percent}%`;
+        const progressBar = document.getElementById('song-progress');
+        const progressHandle = document.getElementById('progress-handle');
+        
+        progressBar.style.width = `${percent}%`;
+        progressHandle.style.right = `${100 - percent}%`;
+        
+        // Update time displays
+        document.getElementById('current-time').textContent = formatTime(audioPlayer.currentTime);
+        document.getElementById('song-duration').textContent = formatTime(audioPlayer.duration);
       }
     });
     
-    // Make progress bar interactive for seeking
-    document.querySelector('.player-progress').addEventListener('click', function(e) {
-      if (!currentSong) return;
-      
-      const progressBar = this;
-      const percent = (e.offsetX / progressBar.offsetWidth);
-      audioPlayer.currentTime = percent * audioPlayer.duration;
+    // When metadata is loaded, update the duration display
+    audioPlayer.addEventListener('loadedmetadata', function() {
+      document.getElementById('song-duration').textContent = formatTime(audioPlayer.duration);
     });
     
-    // Make volume control interactive
-    document.querySelector('.volume-bar').addEventListener('click', function(e) {
-      const volumeBar = this;
-      const percent = (e.offsetX / volumeBar.offsetWidth);
-      audioPlayer.volume = Math.max(0, Math.min(1, percent)); // Ensure between 0 and 1
-      document.querySelector('.volume-progress').style.width = `${percent * 100}%`;
+    // Timeline seeking with dragging
+    const playerTimeline = document.querySelector('.player-timeline');
+    const progressHandle = document.getElementById('progress-handle');
+    
+    playerTimeline.addEventListener('mousedown', function(e) {
+      if (!currentSong) return;
       
-      // Update volume icon based on level
-      const volumeIcon = document.querySelector('.volume-controls i');
-      if (audioPlayer.volume === 0) {
+      const timeline = this;
+      const rect = timeline.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      
+      if (e.target === progressHandle) {
+        // Start dragging the handle
+        isDraggingProgress = true;
+        document.addEventListener('mousemove', handleProgressDrag);
+        document.addEventListener('mouseup', stopProgressDrag);
+      } else {
+        // Just a click, seek immediately
+        seekToPercent(percent);
+      }
+    });
+    
+    function handleProgressDrag(e) {
+      const timeline = document.querySelector('.player-timeline');
+      const rect = timeline.getBoundingClientRect();
+      let percent = (e.clientX - rect.left) / rect.width;
+      
+      // Clamp between 0 and 1
+      percent = Math.max(0, Math.min(1, percent));
+      
+      // Update visuals but don't seek yet
+      document.getElementById('song-progress').style.width = `${percent * 100}%`;
+      progressHandle.style.right = `${100 - (percent * 100)}%`;
+      document.getElementById('current-time').textContent = formatTime(percent * audioPlayer.duration);
+    }
+    
+    function stopProgressDrag(e) {
+      isDraggingProgress = false;
+      document.removeEventListener('mousemove', handleProgressDrag);
+      document.removeEventListener('mouseup', stopProgressDrag);
+      
+      // Now seek to the final position
+      const timeline = document.querySelector('.player-timeline');
+      const rect = timeline.getBoundingClientRect();
+      let percent = (e.clientX - rect.left) / rect.width;
+      percent = Math.max(0, Math.min(1, percent));
+      
+      seekToPercent(percent);
+    }
+    
+    function seekToPercent(percent) {
+      if (!audioPlayer.duration) return;
+      
+      audioPlayer.currentTime = percent * audioPlayer.duration;
+      
+      // Update displays
+      document.getElementById('song-progress').style.width = `${percent * 100}%`;
+      progressHandle.style.right = `${100 - (percent * 100)}%`;
+      document.getElementById('current-time').textContent = formatTime(audioPlayer.currentTime);
+    }
+    
+    // Volume control with dragging
+    const volumeBar = document.querySelector('.volume-bar');
+    const volumeHandle = document.querySelector('.volume-handle');
+    const volumeProgress = document.querySelector('.volume-progress');
+    
+    volumeBar.addEventListener('mousedown', function(e) {
+      const volumeBarRect = volumeBar.getBoundingClientRect();
+      let percent = (e.clientX - volumeBarRect.left) / volumeBarRect.width;
+      percent = Math.max(0, Math.min(1, percent));
+      
+      if (e.target === volumeHandle) {
+        // Start dragging
+        isDraggingVolume = true;
+        document.addEventListener('mousemove', handleVolumeDrag);
+        document.addEventListener('mouseup', stopVolumeDrag);
+      } else {
+        // Just a click
+        setVolumePercent(percent);
+      }
+    });
+    
+    function handleVolumeDrag(e) {
+      const volumeBarRect = volumeBar.getBoundingClientRect();
+      let percent = (e.clientX - volumeBarRect.left) / volumeBarRect.width;
+      percent = Math.max(0, Math.min(1, percent));
+      
+      setVolumePercent(percent);
+    }
+    
+    function stopVolumeDrag() {
+      isDraggingVolume = false;
+      document.removeEventListener('mousemove', handleVolumeDrag);
+      document.removeEventListener('mouseup', stopVolumeDrag);
+    }
+    
+    function setVolumePercent(percent) {
+      audioPlayer.volume = percent;
+      volumeProgress.style.width = `${percent * 100}%`;
+      volumeHandle.style.right = `${100 - (percent * 100)}%`;
+      
+      // Update volume icon
+      const volumeIcon = document.getElementById('volume-icon');
+      if (percent === 0) {
         volumeIcon.className = 'fas fa-volume-mute';
-      } else if (audioPlayer.volume < 0.5) {
+      } else if (percent < 0.5) {
         volumeIcon.className = 'fas fa-volume-down';
       } else {
         volumeIcon.className = 'fas fa-volume-up';
       }
-    });
+    }
     
     // Toggle mute on volume icon click
-    document.querySelector('.volume-controls i').addEventListener('click', function() {
+    document.getElementById('volume-icon').addEventListener('click', function() {
       if (audioPlayer.volume > 0) {
         // Store the current volume for unmuting
         audioPlayer.dataset.prevVolume = audioPlayer.volume;
-        audioPlayer.volume = 0;
-        document.querySelector('.volume-progress').style.width = '0%';
-        this.className = 'fas fa-volume-mute';
+        setVolumePercent(0);
       } else {
         // Restore previous volume or set to 70% if not stored
-        const prevVolume = audioPlayer.dataset.prevVolume || 0.7;
-        audioPlayer.volume = prevVolume;
-        document.querySelector('.volume-progress').style.width = `${prevVolume * 100}%`;
-        this.className = prevVolume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up';
+        const prevVolume = parseFloat(audioPlayer.dataset.prevVolume) || 0.7;
+        setVolumePercent(prevVolume);
       }
     });
     
@@ -975,6 +1168,11 @@
     document.querySelector('.fa-step-backward').addEventListener('click', function() {
       if (!currentSong) return;
       audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
+    });
+    
+    // Set initial volume display
+    window.addEventListener('load', function() {
+      setVolumePercent(audioPlayer.volume);
     });
     
     // Local storage for playlists/messages
