@@ -128,6 +128,7 @@
     .playlists-list {
       list-style: none;
       overflow-y: auto;
+      max-height: 300px;
     }
     
     .playlists-list li {
@@ -301,56 +302,25 @@
       border-radius: 2px;
     }
     
-    .message-board {
-      background-color: rgba(30, 30, 30, 0.6);
-      border-radius: 8px;
-      padding: 24px;
-      margin-top: 32px;
-    }
-    
-    .message {
-      border-bottom: 1px solid #333;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-    }
-    
-    .message-author {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    
-    .message-content {
-      color: #b3b3b3;
-    }
-    
-    .message-input {
-      display: flex;
-      margin-top: 16px;
-    }
-    
-    .message-input input {
-      flex: 1;
-      background-color: #333;
-      border: none;
-      color: #fff;
-      padding: 12px;
-      border-radius: 4px 0 0 4px;
-    }
-    
-    .message-input button {
-      background-color: #1DB954;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-    }
-
     /* Adding icons */
     .icon {
       margin-right: 12px;
       width: 20px;
       text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #333;
+      }
+      .player-timeline {
+        width: 200px;
+      }
     }
   </style>
   <!-- Adding Font Awesome for icons -->
@@ -381,32 +351,28 @@
           <span class="icon"><i class="fas fa-heart"></i></span>
           <span>Liked Songs</span>
         </a>
-        <a href="#" class="nav-link">
-          <span class="icon"><i class="fas fa-comment"></i></span>
-          <span>Message Board</span>
-        </a>
       </nav>
       
       <div class="create-playlist">
         <h3>Create a New Playlist</h3>
-        <p>It's easy, we'll help you</p>
+        <p>It's easy, post a message here!</p>
         <div class="input-group">
-          <input type="text" placeholder="Enter playlist name">
-          <button>Add</button>
+          <input type="text" id="playlist-input" placeholder="Enter your message here...">
+          <button id="add-playlist-btn">Add</button>
         </div>
       </div>
       
       <div class="playlists-header">
-        <span>Playlists</span>
+        <span>Messages & Playlists</span>
         <i class="fas fa-plus"></i>
       </div>
       
-      <ul class="playlists-list">
+      <ul class="playlists-list" id="playlists-container">
         <li>top songs</li>
-        <li>kimcadabramiliondollars</li>
+        <li>Kim is the greatest</li>
         <li>I love my leader kim</li>
         <li>PYONGYANG ANTHEM</li>
-        <li>juche vibes</li>
+        <li>Hello from NYC!</li>
         <li>best of kim</li>
       </ul>
     </div>
@@ -418,28 +384,28 @@
       </div>
       
       <div class="songs-grid">
-        <div class="song-card" onclick="playSong('Rather Kim', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Rather Kim" class="song-img">
+        <div class="song-card" onclick="playSong('Rather Kim', 'Kim Jong Un', 'kim1.jpg', 'rather-kim.mp3')">
+          <img src="images/kim1.jpg" alt="Rather Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Rather Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Towards Kim" class="song-img">
+        <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un', 'kim2.jpg', 'towards-kim.mp3')">
+          <img src="images/kim2.jpg" alt="Towards Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Towards Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="This Kim" class="song-img">
+        <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.jpg', 'this-kim.mp3')">
+          <img src="images/kim3.jpg" alt="This Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">This Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="That's Kim" class="song-img">
+        <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim4.jpg', 'thats-kim.mp3')">
+          <img src="images/kim4.jpg" alt="That's Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">That's Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Marry Kim" class="song-img">
+        <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un', 'kim5.jpg', 'marry-kim.mp3')">
+          <img src="images/kim5.jpg" alt="Marry Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Marry Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
@@ -447,51 +413,30 @@
       
       <h2 class="section-title">Recently Added</h2>
       <div class="songs-grid">
-        <div class="song-card" onclick="playSong('Kim Smile', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Kim Smile" class="song-img">
+        <div class="song-card" onclick="playSong('Kim Smile', 'Kim Jong Un', 'kim6.jpg', 'kim-smile.mp3')">
+          <img src="images/kim6.jpg" alt="Kim Smile" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Kim Smile</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Kim Cry', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Kim Cry" class="song-img">
+        <div class="song-card" onclick="playSong('Kim Cry', 'Kim Jong Un', 'kim7.jpg', 'kim-cry.mp3')">
+          <img src="images/kim7.jpg" alt="Kim Cry" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Kim Cry</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Kim Victory', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Kim Victory" class="song-img">
+        <div class="song-card" onclick="playSong('Kim Victory', 'Kim Jong Un', 'kim8.jpg', 'kim-victory.mp3')">
+          <img src="images/kim8.jpg" alt="Kim Victory" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Kim Victory</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Kim Tears', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Kim Tears" class="song-img">
+        <div class="song-card" onclick="playSong('Kim Tears', 'Kim Jong Un', 'kim9.jpg', 'kim-tears.mp3')">
+          <img src="images/kim9.jpg" alt="Kim Tears" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Kim Tears</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
-        <div class="song-card" onclick="playSong('Kim Forever', 'Kim Jong Un')">
-          <img src="https://via.placeholder.com/300" alt="Kim Forever" class="song-img">
+        <div class="song-card" onclick="playSong('Kim Forever', 'Kim Jong Un', 'kim10.jpg', 'kim-forever.mp3')">
+          <img src="images/kim10.jpg" alt="Kim Forever" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
           <div class="song-title">Kim Forever</div>
           <div class="song-artist">Kim Jong Un</div>
-        </div>
-      </div>
-      
-      <h2 class="section-title">Message Board</h2>
-      <div class="message-board">
-        <div class="message">
-          <div class="message-author">User123:</div>
-          <div class="message-content">Kim's latest remix is pure fire! 🔥</div>
-        </div>
-        <div class="message">
-          <div class="message-author">MusicFan202:</div>
-          <div class="message-content">I can't stop listening to 'This Kim' on repeat!</div>
-        </div>
-        <div class="message">
-          <div class="message-author">RemixLover:</div>
-          <div class="message-content">Has anyone heard the new 'Kim Forever' track?</div>
-        </div>
-        
-        <div class="message-input">
-          <input type="text" placeholder="Add your message...">
-          <button>Post</button>
         </div>
       </div>
     </div>
@@ -542,39 +487,45 @@
     const audioPlayer = document.getElementById('audio-player');
     
     // Function to play a song
-    function playSong(title, artist) {
-      currentSong = { title, artist };
+    function playSong(title, artist, imageFile, audioFile) {
+      currentSong = { title, artist, imageFile, audioFile };
       document.getElementById('current-song-title').textContent = title;
       document.getElementById('current-song-artist').textContent = artist;
-      document.getElementById('current-song-img').src = 'https://via.placeholder.com/60';
       
-      // In a real implementation, you would set the audio source to the actual file
-      // For example: audioPlayer.src = `audio/${title.replace(/\s+/g, '-').toLowerCase()}.mp3`;
+      // Set the image for the current song (with fallback)
+      const songImg = document.getElementById('current-song-img');
+      songImg.src = `images/${imageFile}`;
+      songImg.onerror = function() {
+        this.src = 'https://via.placeholder.com/60';
+      };
       
-      // For this demo, we'll just simulate playback
+      // Set the audio source
+      audioPlayer.src = `audio/${audioFile}`;
+      
+      // Play the song
+      audioPlayer.load();
+      audioPlayer.play().catch(e => {
+        console.log("Audio playback failed. This is normal if no audio file exists yet.", e);
+      });
+      
       isPlaying = true;
       updatePlayButton();
-      
-      // Reset the progress bar
-      document.getElementById('song-progress').style.width = '0%';
-      document.getElementById('current-time').textContent = '0:00';
-      document.getElementById('song-duration').textContent = '3:30'; // Example duration
     }
     
     // Function to toggle play/pause
     function togglePlay() {
       if (!currentSong) return;
       
+      if (isPlaying) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play().catch(e => {
+          console.log("Audio playback failed.", e);
+        });
+      }
+      
       isPlaying = !isPlaying;
       updatePlayButton();
-      
-      if (isPlaying) {
-        // In a real implementation: audioPlayer.play();
-        simulatePlayback();
-      } else {
-        // In a real implementation: audioPlayer.pause();
-        clearInterval(playbackSimulation);
-      }
     }
     
     // Update the play/pause button icon
@@ -583,72 +534,91 @@
       playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
     }
     
-    // Simulate playback progress (for demo purposes)
-    let playbackSimulation;
-    let progress = 0;
-    
-    function simulatePlayback() {
-      clearInterval(playbackSimulation);
-      progress = 0;
-      
-      playbackSimulation = setInterval(() => {
-        progress += 1;
-        if (progress > 100) {
-          clearInterval(playbackSimulation);
-          isPlaying = false;
-          updatePlayButton();
-          return;
-        }
+    // Update progress bar based on actual audio playback
+    audioPlayer.addEventListener('timeupdate', function() {
+      if (audioPlayer.duration) {
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        document.getElementById('song-progress').style.width = `${percent}%`;
         
-        document.getElementById('song-progress').style.width = `${progress}%`;
-        
-        // Update the time display (simulated)
-        const seconds = Math.floor((progress / 100) * 210); // Assuming 3:30 (210 seconds) duration
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
+        // Update time display
+        const currentMinutes = Math.floor(audioPlayer.currentTime / 60);
+        const currentSeconds = Math.floor(audioPlayer.currentTime % 60);
         document.getElementById('current-time').textContent = 
-          `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-      }, 100);
+          `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+        
+        const durationMinutes = Math.floor(audioPlayer.duration / 60);
+        const durationSeconds = Math.floor(audioPlayer.duration % 60);
+        document.getElementById('song-duration').textContent = 
+          `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+      }
+    });
+    
+    // Handle song end
+    audioPlayer.addEventListener('ended', function() {
+      isPlaying = false;
+      updatePlayButton();
+    });
+    
+    // Local storage for playlists/messages
+    function savePlaylistsToStorage(playlists) {
+      localStorage.setItem('kimify-playlists', JSON.stringify(playlists));
     }
     
-    // Add playlist functionality
-    document.querySelector('.input-group button').addEventListener('click', function() {
-      const input = document.querySelector('.input-group input');
+    function getPlaylistsFromStorage() {
+      const stored = localStorage.getItem('kimify-playlists');
+      return stored ? JSON.parse(stored) : [
+        "top songs", 
+        "Kim is the greatest", 
+        "I love my leader kim", 
+        "PYONGYANG ANTHEM", 
+        "Hello from NYC!",
+        "best of kim"
+      ];
+    }
+    
+    // Load playlists from storage and render
+    function renderPlaylists() {
+      const playlists = getPlaylistsFromStorage();
+      const container = document.getElementById('playlists-container');
+      container.innerHTML = '';
+      
+      playlists.forEach(playlist => {
+        const li = document.createElement('li');
+        li.textContent = playlist;
+        container.appendChild(li);
+      });
+    }
+    
+    // Add playlist/message functionality
+    document.getElementById('add-playlist-btn').addEventListener('click', function() {
+      const input = document.getElementById('playlist-input');
       const playlistName = input.value.trim();
       
       if (playlistName) {
-        const newPlaylist = document.createElement('li');
-        newPlaylist.textContent = playlistName;
-        document.querySelector('.playlists-list').appendChild(newPlaylist);
+        const playlists = getPlaylistsFromStorage();
+        playlists.unshift(playlistName); // Add to start
+        
+        // Keep only the most recent 100 messages
+        if (playlists.length > 100) {
+          playlists.pop();
+        }
+        
+        savePlaylistsToStorage(playlists);
+        renderPlaylists();
         input.value = '';
       }
     });
     
-    // Add message board functionality
-    document.querySelector('.message-input button').addEventListener('click', function() {
-      const input = document.querySelector('.message-input input');
-      const messageContent = input.value.trim();
-      
-      if (messageContent) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
-        
-        const authorDiv = document.createElement('div');
-        authorDiv.className = 'message-author';
-        authorDiv.textContent = 'You:';
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.textContent = messageContent;
-        
-        messageDiv.appendChild(authorDiv);
-        messageDiv.appendChild(contentDiv);
-        
-        const messageBoard = document.querySelector('.message-board');
-        messageBoard.insertBefore(messageDiv, document.querySelector('.message-input'));
-        
-        input.value = '';
+    // Add keyboard shortcut for adding playlist
+    document.getElementById('playlist-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('add-playlist-btn').click();
       }
+    });
+    
+    // Initialize the playlists on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      renderPlaylists();
     });
   </script>
 </body>
