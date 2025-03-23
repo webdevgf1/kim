@@ -9,6 +9,10 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     
     body {
@@ -166,6 +170,14 @@
       padding: 32px;
     }
     
+    /* Apply styles to prevent text selection for all text elements */
+    h1, h2, h3, p, div, span, a, li {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
     .header {
       display: flex;
       justify-content: space-between;
@@ -200,22 +212,55 @@
       border-radius: 8px;
       transition: background-color 0.3s;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
     
-    .song-card:hover {
-      background-color: rgba(50, 50, 50, 0.6);
+    .song-card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: transparent;
+      transition: background-color 0.3s;
+      pointer-events: none;
+    }
+    
+    .song-card:hover:before {
+      background-color: rgba(255, 255, 255, 0.1);
     }
     
     .song-card img {
       pointer-events: none; /* Prevents image flickering issues */
+      -webkit-user-drag: none;
     }
     
-    .song-img {
+    .song-img-container {
       width: 100%;
       aspect-ratio: 1;
-      object-fit: cover;
       margin-bottom: 16px;
       border-radius: 4px;
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    .song-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background-color: #333;
+      position: relative;
+    }
+    
+    .song-img-placeholder:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(80, 80, 80, 0.3) 0%, rgba(50, 50, 50, 0.3) 100%);
     }
     
     .song-title {
@@ -250,25 +295,81 @@
       position: relative;
     }
     
+    .player-progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background-color: #5e5e5e;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #b3b3b3;
+      transition: width 0.1s linear;
+    }
+    
     .now-playing {
       width: 30%;
       display: flex;
       align-items: center;
     }
     
-    .song-info {
-      margin-left: 12px;
+    .now-playing-img-container {
+      width: 56px;
+      height: 56px;
+      border-radius: 4px;
+      overflow: hidden;
+      background-color: #333;
+      margin-right: 12px;
+    }
+    
+    .now-playing-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background-color: #333;
+      position: relative;
+    }
+    
+    .now-playing-img-placeholder:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(80, 80, 80, 0.3) 0%, rgba(50, 50, 50, 0.3) 100%);
     }
     
     .player-controls {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      margin: 0 auto;
+      justify-content: center;
+      gap: 16px;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
+      bottom: 24px;
+    }
+    
+    .control-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 8px;
+    }
+    
+    .control-buttons i {
+      color: #b3b3b3;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .control-buttons i:hover {
+      color: #fff;
     }
     
     .play-btn {
@@ -282,6 +383,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      padding: 0;
     }
     
     .player-timeline {
@@ -404,27 +506,37 @@
       
       <div class="songs-grid">
         <div class="song-card" onclick="playSong('Rather Kim', 'Kim Jong Un', 'kim1.jpg', 'rather-kim.mp3')">
-          <img src="images/kim1.jpg" alt="Rather Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Rather Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un', 'kim2.jpg', 'towards-kim.mp3')">
-          <img src="images/kim2.jpg" alt="Towards Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Towards Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.jpg', 'this-kim.mp3')">
-          <img src="images/kim3.jpg" alt="This Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">This Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim4.jpg', 'thats-kim.mp3')">
-          <img src="images/kim4.jpg" alt="That's Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">That's Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un', 'kim5.jpg', 'marry-kim.mp3')">
-          <img src="images/kim5.jpg" alt="Marry Kim" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Marry Kim</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
@@ -433,27 +545,37 @@
       <h2 class="section-title">Recently Added</h2>
       <div class="songs-grid">
         <div class="song-card" onclick="playSong('Kim Smile', 'Kim Jong Un', 'kim6.jpg', 'kim-smile.mp3')">
-          <img src="images/kim6.jpg" alt="Kim Smile" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Kim Smile</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Kim Cry', 'Kim Jong Un', 'kim7.jpg', 'kim-cry.mp3')">
-          <img src="images/kim7.jpg" alt="Kim Cry" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Kim Cry</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Kim Victory', 'Kim Jong Un', 'kim8.jpg', 'kim-victory.mp3')">
-          <img src="images/kim8.jpg" alt="Kim Victory" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Kim Victory</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Kim Tears', 'Kim Jong Un', 'kim9.jpg', 'kim-tears.mp3')">
-          <img src="images/kim9.jpg" alt="Kim Tears" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Kim Tears</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
         <div class="song-card" onclick="playSong('Kim Forever', 'Kim Jong Un', 'kim10.jpg', 'kim-forever.mp3')">
-          <img src="images/kim10.jpg" alt="Kim Forever" class="song-img" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="song-img-container">
+            <div class="song-img-placeholder"></div>
+          </div>
           <div class="song-title">Kim Forever</div>
           <div class="song-artist">Kim Jong Un</div>
         </div>
@@ -463,7 +585,9 @@
   
   <div class="player">
     <div class="now-playing">
-      <img src="https://via.placeholder.com/60" alt="Current Song" id="current-song-img">
+      <div class="now-playing-img-container">
+        <div class="now-playing-img-placeholder" id="current-song-img-container"></div>
+      </div>
       <div class="song-info">
         <div class="song-title" id="current-song-title">Select a song</div>
         <div class="song-artist" id="current-song-artist"></div>
@@ -472,19 +596,13 @@
     </div>
     
     <div class="player-controls">
-      <i class="fas fa-step-backward"></i>
-      <button class="play-btn" onclick="togglePlay()">
-        <i class="fas fa-play" id="play-icon"></i>
-      </button>
-      <i class="fas fa-step-forward"></i>
-      <i class="fas fa-repeat"></i>
-      
-      <div class="player-timeline">
-        <span id="current-time">0:00</span>
-        <div class="timeline">
-          <div class="timeline-progress" id="song-progress"></div>
-        </div>
-        <span id="song-duration">0:00</span>
+      <div class="control-buttons">
+        <i class="fas fa-step-backward"></i>
+        <button class="play-btn" onclick="togglePlay()">
+          <i class="fas fa-play" id="play-icon"></i>
+        </button>
+        <i class="fas fa-step-forward"></i>
+        <i class="fas fa-repeat"></i>
       </div>
     </div>
     
@@ -518,12 +636,7 @@
       document.getElementById('current-song-title').textContent = title;
       document.getElementById('current-song-artist').textContent = artist;
       
-      // Set the image for the current song (with fallback)
-      const songImg = document.getElementById('current-song-img');
-      songImg.src = `images/${imageFile}`;
-      songImg.onerror = function() {
-        this.src = 'https://via.placeholder.com/60';
-      };
+      // No need to set image, we're using a placeholder
       
       // Set the audio source
       audioPlayer.src = `audio/${audioFile}`;
@@ -565,17 +678,6 @@
       if (audioPlayer.duration) {
         const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         document.getElementById('song-progress').style.width = `${percent}%`;
-        
-        // Update time display
-        const currentMinutes = Math.floor(audioPlayer.currentTime / 60);
-        const currentSeconds = Math.floor(audioPlayer.currentTime % 60);
-        document.getElementById('current-time').textContent = 
-          `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-        
-        const durationMinutes = Math.floor(audioPlayer.duration / 60);
-        const durationSeconds = Math.floor(audioPlayer.duration % 60);
-        document.getElementById('song-duration').textContent = 
-          `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
       }
     });
     
