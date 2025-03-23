@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+.player-progress {
+      display: none; /* Hide this since we're using the new timeline */
+    }<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -464,8 +466,98 @@
       position: relative;
     }
     
-    .player-progress {
-      display: none; /* Hide this since we're using the new timeline */
+    /* Windows 98 Style Error Dialog */
+    .error-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .error-dialog {
+      width: 400px;
+      background-color: #c0c0c0;
+      border: 3px solid #ffffff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      color: #000;
+      font-family: 'Courier New', monospace;
+      padding: 2px;
+      position: relative;
+    }
+    
+    .error-title-bar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      font-weight: bold;
+      padding: 3px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .error-title-bar .close-btn {
+      background-color: #c0c0c0;
+      border: 2px solid #ffffff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      color: #000;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .error-content {
+      padding: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .error-content img {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .error-message {
+      flex: 1;
+      font-size: 12px;
+    }
+    
+    .error-buttons {
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .error-button {
+      background-color: #c0c0c0;
+      border: 2px solid #ffffff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      color: #000;
+      padding: 4px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .error-button:active {
+      border: 2px solid #808080;
+      border-right-color: #ffffff;
+      border-bottom-color: #ffffff;
     }
     
     .now-playing {
@@ -847,6 +939,15 @@
           <div class="song-info-container">
             <div class="song-title">Kim Cry</div>
             <div class="song-artist">Kim Jong Un</div>
+          </div>
+        </div>
+        <div class="song-card" onclick="showErrorDialog()">
+          <div class="song-img-container">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/2e/BTS_logo.svg/1200px-BTS_logo.svg.png" alt="BTS" class="song-img">
+          </div>
+          <div class="song-info-container">
+            <div class="song-title">Dynamite</div>
+            <div class="song-artist">BTS</div>
           </div>
         </div>
       </div>
@@ -1284,6 +1385,70 @@
         }
       });
     });
+    
+    // Function to show North Korean error dialog
+    function showErrorDialog() {
+      const overlay = document.createElement('div');
+      overlay.className = 'error-overlay';
+      
+      const dialog = document.createElement('div');
+      dialog.className = 'error-dialog';
+      
+      // Title bar
+      const titleBar = document.createElement('div');
+      titleBar.className = 'error-title-bar';
+      titleBar.innerHTML = '<span>DPRK System Error</span><span class="close-btn">×</span>';
+      
+      // Content
+      const content = document.createElement('div');
+      content.className = 'error-content';
+      
+      // Flag image
+      const flagImg = document.createElement('img');
+      flagImg.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Flag_of_North_Korea.svg/800px-Flag_of_North_Korea.svg.png';
+      flagImg.alt = 'North Korea Flag';
+      
+      // Error message
+      const message = document.createElement('div');
+      message.className = 'error-message';
+      message.innerHTML = `
+        <b>CRITICAL ERROR #9458</b><br><br>
+        You have attempted to access forbidden South Korean cultural material.<br><br>
+        This violation of the Democratic People's Republic of Korea's laws has been recorded.<br><br>
+        Your IP address and location have been forwarded to authorities.<br><br>
+        <b>Penalty:</b> Re-education through labor (3-5 years)
+      `;
+      
+      content.appendChild(flagImg);
+      content.appendChild(message);
+      
+      // Buttons
+      const buttons = document.createElement('div');
+      buttons.className = 'error-buttons';
+      
+      const okButton = document.createElement('button');
+      okButton.className = 'error-button';
+      okButton.textContent = 'Accept Punishment';
+      
+      buttons.appendChild(okButton);
+      
+      // Assemble dialog
+      dialog.appendChild(titleBar);
+      dialog.appendChild(content);
+      dialog.appendChild(buttons);
+      
+      overlay.appendChild(dialog);
+      document.body.appendChild(overlay);
+      
+      // Event listeners
+      titleBar.querySelector('.close-btn').addEventListener('click', function() {
+        document.body.removeChild(overlay);
+      });
+      
+      okButton.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+      });
+    }
     
     // Initialize the playlists on page load
     document.addEventListener('DOMContentLoaded', function() {
