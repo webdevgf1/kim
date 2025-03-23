@@ -471,6 +471,7 @@
       bottom: 0;
       height: 4px;
       background-color: #5e5e5e;
+      cursor: pointer;
     }
     
     .progress-bar {
@@ -478,6 +479,14 @@
       width: 0%;
       background-color: #b3b3b3;
       transition: width 0.1s linear;
+    }
+    
+    .player-progress:hover {
+      height: 6px;
+    }
+    
+    .player-progress:hover .progress-bar {
+      background-color: #1DB954;
     }
     
     .now-playing {
@@ -588,6 +597,8 @@
       height: 4px;
       background-color: #5e5e5e;
       border-radius: 2px;
+      cursor: pointer;
+      position: relative;
     }
     
     .volume-progress {
@@ -595,6 +606,15 @@
       width: 70%;
       background-color: #b3b3b3;
       border-radius: 2px;
+      transition: width 0.1s ease;
+    }
+    
+    .volume-bar:hover .volume-progress {
+      background-color: #1DB954;
+    }
+    
+    .volume-bar:hover {
+      height: 6px;
     }
     
     /* Adding icons */
@@ -699,32 +719,32 @@
           </div>
         </div>
         <div class="song-card" onclick="playSong('Rocket Man', 'Kim Jong Un', 'kim4.png', 'kim2.mp3')">
-          <div class="song-img-container">
-            <img src="images/kim4.png" alt="Rocket Man" class="song-img">
+            <div class="song-img-container">
+              <img src="images/kim4.png" alt="Rocket Man" class="song-img">
+            </div>
+            <div class="song-info-container">
+              <div class="song-title">Rocket Man</div>
+              <div class="song-artist">Kim Jong Un</div>
+            </div>
           </div>
-          <div class="song-info-container">
-            <div class="song-title">Rocket Man</div>
-            <div class="song-artist">Kim Jong Un</div>
+          <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.png', 'kim3.mp3')">
+            <div class="song-img-container">
+              <img src="images/kim3.png" alt="This Kim" class="song-img">
+            </div>
+            <div class="song-info-container">
+              <div class="song-title">This Kim</div>
+              <div class="song-artist">Kim Jong Un</div>
+            </div>
           </div>
-        </div>
-        <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.png', 'kim3.mp3')">
-          <div class="song-img-container">
-            <img src="images/kim3.png" alt="This Kim" class="song-img">
+          <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim2.png', 'kim4.mp3')">
+            <div class="song-img-container">
+              <img src="images/kim2.png" alt="That's Kim" class="song-img">
+            </div>
+            <div class="song-info-container">
+              <div class="song-title">That's Kim</div>
+              <div class="song-artist">Kim Jong Un</div>
+            </div>
           </div>
-          <div class="song-info-container">
-            <div class="song-title">This Kim</div>
-            <div class="song-artist">Kim Jong Un</div>
-          </div>
-        </div>
-        <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim4.png', 'kim4.mp3')">
-          <div class="song-img-container">
-            <img src="images/kim2.png" alt="That's Kim" class="song-img">
-          </div>
-          <div class="song-info-container">
-            <div class="song-title">That's Kim</div>
-            <div class="song-artist">Kim Jong Un</div>
-          </div>
-        </div>
         <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un', 'kim5.png', 'kim5.mp3')">
           <div class="song-img-container">
             <img src="images/kim5.png" alt="Marry Kim" class="song-img">
@@ -834,6 +854,9 @@
     let isPlaying = false;
     const audioPlayer = document.getElementById('audio-player');
     
+    // Initialize volume
+    audioPlayer.volume = 0.7; // 70% volume by default
+    
     // Function to play a song
     function playSong(title, artist, imageFile, audioFile) {
       currentSong = { title, artist, imageFile, audioFile };
@@ -893,10 +916,65 @@
       }
     });
     
+    // Make progress bar interactive for seeking
+    document.querySelector('.player-progress').addEventListener('click', function(e) {
+      if (!currentSong) return;
+      
+      const progressBar = this;
+      const percent = (e.offsetX / progressBar.offsetWidth);
+      audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+    
+    // Make volume control interactive
+    document.querySelector('.volume-bar').addEventListener('click', function(e) {
+      const volumeBar = this;
+      const percent = (e.offsetX / volumeBar.offsetWidth);
+      audioPlayer.volume = Math.max(0, Math.min(1, percent)); // Ensure between 0 and 1
+      document.querySelector('.volume-progress').style.width = `${percent * 100}%`;
+      
+      // Update volume icon based on level
+      const volumeIcon = document.querySelector('.volume-controls i');
+      if (audioPlayer.volume === 0) {
+        volumeIcon.className = 'fas fa-volume-mute';
+      } else if (audioPlayer.volume < 0.5) {
+        volumeIcon.className = 'fas fa-volume-down';
+      } else {
+        volumeIcon.className = 'fas fa-volume-up';
+      }
+    });
+    
+    // Toggle mute on volume icon click
+    document.querySelector('.volume-controls i').addEventListener('click', function() {
+      if (audioPlayer.volume > 0) {
+        // Store the current volume for unmuting
+        audioPlayer.dataset.prevVolume = audioPlayer.volume;
+        audioPlayer.volume = 0;
+        document.querySelector('.volume-progress').style.width = '0%';
+        this.className = 'fas fa-volume-mute';
+      } else {
+        // Restore previous volume or set to 70% if not stored
+        const prevVolume = audioPlayer.dataset.prevVolume || 0.7;
+        audioPlayer.volume = prevVolume;
+        document.querySelector('.volume-progress').style.width = `${prevVolume * 100}%`;
+        this.className = prevVolume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up';
+      }
+    });
+    
     // Handle song end
     audioPlayer.addEventListener('ended', function() {
       isPlaying = false;
       updatePlayButton();
+    });
+    
+    // Forward and backward buttons
+    document.querySelector('.fa-step-forward').addEventListener('click', function() {
+      if (!currentSong || !audioPlayer.duration) return;
+      audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 10);
+    });
+    
+    document.querySelector('.fa-step-backward').addEventListener('click', function() {
+      if (!currentSong) return;
+      audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
     });
     
     // Local storage for playlists/messages
