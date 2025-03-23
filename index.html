@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kimify - Kim Jong Un Remixes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    .sidebar {
+      width: 240px;
+      background-color: #000;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #333;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #1DB954;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      color: #000;
+      font-weight: bold;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      color: #b3b3b3;
+      text-decoration: none;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    
+    .nav-link:hover {
+      color: #fff;
+    }
+    
+    .nav-link i {
+      margin-right: 16px;
+      font-size: 20px;
+    }
+    
+    .create-playlist {
+      background-color: #121212;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .create-playlist h3 {
+      margin-bottom: 8px;
+    }
+    
+    .create-playlist p {
+      font-size: 13px;
+      color: #b3b3b3;
+      margin-bottom: 12px;
+    }
+    
+    .input-group {
+      display: flex;
+    }
+    
+    .input-group input {
+      flex: 1;
+      background-color: #333;
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px 0 0 4px;
+      font-size: 14px;
+    }
+    
+    .input-group button {
+      background-color: #444;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .playlists-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: #b3b3b3;
+      font-weight: bold;
+    }
+    
+    .playlists-list {
+      list-style: none;
+      overflow-y: auto;
+    }
+    
+    .playlists-list li {
+      color: #b3b3b3;
+      margin-bottom: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .playlists-list li:hover {
+      color: #fff;
+    }
+    
+    .main-content {
+      flex: 1;
+      background: linear-gradient(180deg, #5E287D 0%, #121212 100%);
+      overflow-y: auto;
+      padding: 32px;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .header a {
+      color: #b3b3b3;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .header a:hover {
+      color: #fff;
+    }
+    
+    .songs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 24px;
+    }
+    
+    .song-card {
+      background-color: rgba(30, 30, 30, 0.6);
+      padding: 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+    
+    .song-card:hover {
+      background-color: rgba(50, 50, 50, 0.6);
+    }
+    
+    .song-img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      margin-bottom: 16px;
+      border-radius: 4px;
+    }
+    
+    .song-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .song-artist {
+      font-size: 13px;
+      color: #b3b3b3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .section-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 32px 0 24px;
+    }
+    
+    .player {
+      height: 90px;
+      background-color: #181818;
+      border-top: 1px solid #333;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+    
+    .now-playing {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    
+    .song-info {
+      margin-left: 12px;
+    }
+    
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 0 auto;
+    }
+    
+    .play-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      border: none;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .player-timeline {
+      width: 500px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .timeline {
+      flex: 1;
+      height: 4px;
+      background-color: #5e5e5e;
+      border-radius: 2px;
+      position: relative;
+    }
+    
+    .timeline-progress {
+      height: 100%;
+      width: 30%;
+      background-color: #b3b3b3;
+      border-radius: 2px;
+    }
+    
+    .volume-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    
+    .volume-bar {
+      width: 100px;
+      height: 4px;
+      background-color: #5e5e5e;
+      border-radius: 2px;
+    }
+    
+    .volume-progress {
+      height: 100%;
+      width: 70%;
+      background-color: #b3b3b3;
+      border-radius: 2px;
+    }
+    
+    .message-board {
+      background-color: rgba(30, 30, 30, 0.6);
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    
+    .message {
+      border-bottom: 1px solid #333;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .message-author {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .message-content {
+      color: #b3b3b3;
+    }
+    
+    .message-input {
+      display: flex;
+      margin-top: 16px;
+    }
+    
+    .message-input input {
+      flex: 1;
+      background-color: #333;
+      border: none;
+      color: #fff;
+      padding: 12px;
+      border-radius: 4px 0 0 4px;
+    }
+    
+    .message-input button {
+      background-color: #1DB954;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+
+    /* Adding icons */
+    .icon {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+  </style>
+  <!-- Adding Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">K</div>
+        <span>Kimify</span>
+      </div>
+      
+      <nav>
+        <a href="#" class="nav-link">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span>Home</span>
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon"><i class="fas fa-search"></i></span>
+          <span>Search</span>
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon"><i class="fas fa-history"></i></span>
+          <span>Recently Played</span>
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon"><i class="fas fa-heart"></i></span>
+          <span>Liked Songs</span>
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon"><i class="fas fa-comment"></i></span>
+          <span>Message Board</span>
+        </a>
+      </nav>
+      
+      <div class="create-playlist">
+        <h3>Create a New Playlist</h3>
+        <p>It's easy, we'll help you</p>
+        <div class="input-group">
+          <input type="text" placeholder="Enter playlist name">
+          <button>Add</button>
+        </div>
+      </div>
+      
+      <div class="playlists-header">
+        <span>Playlists</span>
+        <i class="fas fa-plus"></i>
+      </div>
+      
+      <ul class="playlists-list">
+        <li>top songs</li>
+        <li>kimcadabramiliondollars</li>
+        <li>I love my leader kim</li>
+        <li>PYONGYANG ANTHEM</li>
+        <li>juche vibes</li>
+        <li>best of kim</li>
+      </ul>
+    </div>
+    
+    <div class="main-content">
+      <div class="header">
+        <h1>Kim's Songs</h1>
+        <a href="#">Show all</a>
+      </div>
+      
+      <div class="songs-grid">
+        <div class="song-card" onclick="playSong('Rather Kim', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Rather Kim" class="song-img">
+          <div class="song-title">Rather Kim</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Towards Kim" class="song-img">
+          <div class="song-title">Towards Kim</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="This Kim" class="song-img">
+          <div class="song-title">This Kim</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="That's Kim" class="song-img">
+          <div class="song-title">That's Kim</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Marry Kim" class="song-img">
+          <div class="song-title">Marry Kim</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+      </div>
+      
+      <h2 class="section-title">Recently Added</h2>
+      <div class="songs-grid">
+        <div class="song-card" onclick="playSong('Kim Smile', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Kim Smile" class="song-img">
+          <div class="song-title">Kim Smile</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Kim Cry', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Kim Cry" class="song-img">
+          <div class="song-title">Kim Cry</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Kim Victory', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Kim Victory" class="song-img">
+          <div class="song-title">Kim Victory</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Kim Tears', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Kim Tears" class="song-img">
+          <div class="song-title">Kim Tears</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+        <div class="song-card" onclick="playSong('Kim Forever', 'Kim Jong Un')">
+          <img src="https://via.placeholder.com/300" alt="Kim Forever" class="song-img">
+          <div class="song-title">Kim Forever</div>
+          <div class="song-artist">Kim Jong Un</div>
+        </div>
+      </div>
+      
+      <h2 class="section-title">Message Board</h2>
+      <div class="message-board">
+        <div class="message">
+          <div class="message-author">User123:</div>
+          <div class="message-content">Kim's latest remix is pure fire! 🔥</div>
+        </div>
+        <div class="message">
+          <div class="message-author">MusicFan202:</div>
+          <div class="message-content">I can't stop listening to 'This Kim' on repeat!</div>
+        </div>
+        <div class="message">
+          <div class="message-author">RemixLover:</div>
+          <div class="message-content">Has anyone heard the new 'Kim Forever' track?</div>
+        </div>
+        
+        <div class="message-input">
+          <input type="text" placeholder="Add your message...">
+          <button>Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="player">
+    <div class="now-playing">
+      <img src="https://via.placeholder.com/60" alt="Current Song" id="current-song-img">
+      <div class="song-info">
+        <div class="song-title" id="current-song-title">Select a song</div>
+        <div class="song-artist" id="current-song-artist"></div>
+      </div>
+      <i class="far fa-heart"></i>
+    </div>
+    
+    <div class="player-controls">
+      <i class="fas fa-step-backward"></i>
+      <button class="play-btn" onclick="togglePlay()">
+        <i class="fas fa-play" id="play-icon"></i>
+      </button>
+      <i class="fas fa-step-forward"></i>
+      <i class="fas fa-repeat"></i>
+      
+      <div class="player-timeline">
+        <span id="current-time">0:00</span>
+        <div class="timeline">
+          <div class="timeline-progress" id="song-progress"></div>
+        </div>
+        <span id="song-duration">0:00</span>
+      </div>
+    </div>
+    
+    <div class="volume-controls">
+      <i class="fas fa-volume-up"></i>
+      <div class="volume-bar">
+        <div class="volume-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio element to handle actual playback -->
+  <audio id="audio-player" src=""></audio>
+  
+  <script>
+    // Keep track of the current song and play state
+    let currentSong = null;
+    let isPlaying = false;
+    const audioPlayer = document.getElementById('audio-player');
+    
+    // Function to play a song
+    function playSong(title, artist) {
+      currentSong = { title, artist };
+      document.getElementById('current-song-title').textContent = title;
+      document.getElementById('current-song-artist').textContent = artist;
+      document.getElementById('current-song-img').src = 'https://via.placeholder.com/60';
+      
+      // In a real implementation, you would set the audio source to the actual file
+      // For example: audioPlayer.src = `audio/${title.replace(/\s+/g, '-').toLowerCase()}.mp3`;
+      
+      // For this demo, we'll just simulate playback
+      isPlaying = true;
+      updatePlayButton();
+      
+      // Reset the progress bar
+      document.getElementById('song-progress').style.width = '0%';
+      document.getElementById('current-time').textContent = '0:00';
+      document.getElementById('song-duration').textContent = '3:30'; // Example duration
+    }
+    
+    // Function to toggle play/pause
+    function togglePlay() {
+      if (!currentSong) return;
+      
+      isPlaying = !isPlaying;
+      updatePlayButton();
+      
+      if (isPlaying) {
+        // In a real implementation: audioPlayer.play();
+        simulatePlayback();
+      } else {
+        // In a real implementation: audioPlayer.pause();
+        clearInterval(playbackSimulation);
+      }
+    }
+    
+    // Update the play/pause button icon
+    function updatePlayButton() {
+      const playIcon = document.getElementById('play-icon');
+      playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+    }
+    
+    // Simulate playback progress (for demo purposes)
+    let playbackSimulation;
+    let progress = 0;
+    
+    function simulatePlayback() {
+      clearInterval(playbackSimulation);
+      progress = 0;
+      
+      playbackSimulation = setInterval(() => {
+        progress += 1;
+        if (progress > 100) {
+          clearInterval(playbackSimulation);
+          isPlaying = false;
+          updatePlayButton();
+          return;
+        }
+        
+        document.getElementById('song-progress').style.width = `${progress}%`;
+        
+        // Update the time display (simulated)
+        const seconds = Math.floor((progress / 100) * 210); // Assuming 3:30 (210 seconds) duration
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        document.getElementById('current-time').textContent = 
+          `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+      }, 100);
+    }
+    
+    // Add playlist functionality
+    document.querySelector('.input-group button').addEventListener('click', function() {
+      const input = document.querySelector('.input-group input');
+      const playlistName = input.value.trim();
+      
+      if (playlistName) {
+        const newPlaylist = document.createElement('li');
+        newPlaylist.textContent = playlistName;
+        document.querySelector('.playlists-list').appendChild(newPlaylist);
+        input.value = '';
+      }
+    });
+    
+    // Add message board functionality
+    document.querySelector('.message-input button').addEventListener('click', function() {
+      const input = document.querySelector('.message-input input');
+      const messageContent = input.value.trim();
+      
+      if (messageContent) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+        
+        const authorDiv = document.createElement('div');
+        authorDiv.className = 'message-author';
+        authorDiv.textContent = 'You:';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = messageContent;
+        
+        messageDiv.appendChild(authorDiv);
+        messageDiv.appendChild(contentDiv);
+        
+        const messageBoard = document.querySelector('.message-board');
+        messageBoard.insertBefore(messageDiv, document.querySelector('.message-input'));
+        
+        input.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
