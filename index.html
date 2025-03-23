@@ -119,10 +119,27 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      margin-top: 24px;
       text-transform: uppercase;
       font-size: 12px;
       color: #b3b3b3;
       font-weight: bold;
+    }
+    
+    .playlists-header i {
+      cursor: pointer;
+      font-size: 16px;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .playlists-header i:hover {
+      background-color: rgba(255, 255, 255, 0.2);
     }
     
     .playlists-list {
@@ -189,6 +206,10 @@
       background-color: rgba(50, 50, 50, 0.6);
     }
     
+    .song-card img {
+      pointer-events: none; /* Prevents image flickering issues */
+    }
+    
     .song-img {
       width: 100%;
       aspect-ratio: 1;
@@ -226,10 +247,11 @@
       display: flex;
       align-items: center;
       padding: 0 16px;
+      position: relative;
     }
     
     .now-playing {
-      flex: 1;
+      width: 30%;
       display: flex;
       align-items: center;
     }
@@ -240,9 +262,13 @@
     
     .player-controls {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 8px;
       margin: 0 auto;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
     
     .play-btn {
@@ -282,10 +308,12 @@
     }
     
     .volume-controls {
+      width: 30%;
       display: flex;
       align-items: center;
       gap: 8px;
       margin-left: auto;
+      justify-content: flex-end;
     }
     
     .volume-bar {
@@ -353,18 +381,9 @@
         </a>
       </nav>
       
-      <div class="create-playlist">
-        <h3>Create a New Playlist</h3>
-        <p>It's easy, post a message here!</p>
-        <div class="input-group">
-          <input type="text" id="playlist-input" placeholder="Enter your message here...">
-          <button id="add-playlist-btn">Add</button>
-        </div>
-      </div>
-      
       <div class="playlists-header">
-        <span>Messages & Playlists</span>
-        <i class="fas fa-plus"></i>
+        <span>MESSAGES & PLAYLISTS</span>
+        <i class="fas fa-plus" id="add-playlist-btn"></i>
       </div>
       
       <ul class="playlists-list" id="playlists-container">
@@ -481,6 +500,13 @@
   <audio id="audio-player" src=""></audio>
   
   <script>
+    // Prevent text selection to avoid flickering
+    document.addEventListener('mousedown', function(e) {
+      if (e.detail > 1) {
+        e.preventDefault();
+      }
+    }, false);
+    
     // Keep track of the current song and play state
     let currentSong = null;
     let isPlaying = false;
@@ -591,29 +617,113 @@
     
     // Add playlist/message functionality
     document.getElementById('add-playlist-btn').addEventListener('click', function() {
-      const input = document.getElementById('playlist-input');
-      const playlistName = input.value.trim();
+      // Create a modal for input
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
+      modal.style.zIndex = '1000';
       
-      if (playlistName) {
-        const playlists = getPlaylistsFromStorage();
-        playlists.unshift(playlistName); // Add to start
-        
-        // Keep only the most recent 100 messages
-        if (playlists.length > 100) {
-          playlists.pop();
+      const modalContent = document.createElement('div');
+      modalContent.style.width = '300px';
+      modalContent.style.backgroundColor = '#282828';
+      modalContent.style.padding = '20px';
+      modalContent.style.borderRadius = '8px';
+      
+      const heading = document.createElement('h3');
+      heading.textContent = 'Add a new message';
+      heading.style.marginBottom = '15px';
+      heading.style.color = 'white';
+      
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Enter your message here...';
+      input.style.width = '100%';
+      input.style.padding = '8px';
+      input.style.marginBottom = '15px';
+      input.style.backgroundColor = '#333';
+      input.style.border = 'none';
+      input.style.color = 'white';
+      input.style.borderRadius = '4px';
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.display = 'flex';
+      buttonContainer.style.justifyContent = 'flex-end';
+      buttonContainer.style.gap = '10px';
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.style.padding = '8px 16px';
+      cancelBtn.style.backgroundColor = '#333';
+      cancelBtn.style.color = 'white';
+      cancelBtn.style.border = 'none';
+      cancelBtn.style.borderRadius = '4px';
+      cancelBtn.style.cursor = 'pointer';
+      
+      const addBtn = document.createElement('button');
+      addBtn.textContent = 'Add';
+      addBtn.style.padding = '8px 16px';
+      addBtn.style.backgroundColor = '#1DB954';
+      addBtn.style.color = 'white';
+      addBtn.style.border = 'none';
+      addBtn.style.borderRadius = '4px';
+      addBtn.style.cursor = 'pointer';
+      
+      buttonContainer.appendChild(cancelBtn);
+      buttonContainer.appendChild(addBtn);
+      
+      modalContent.appendChild(heading);
+      modalContent.appendChild(input);
+      modalContent.appendChild(buttonContainer);
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Focus the input
+      setTimeout(() => input.focus(), 100);
+      
+      // Handle add button click
+      addBtn.addEventListener('click', function() {
+        const playlistName = input.value.trim();
+        if (playlistName) {
+          const playlists = getPlaylistsFromStorage();
+          playlists.unshift(playlistName); // Add to start
+          
+          // Keep only the most recent 100 messages
+          if (playlists.length > 100) {
+            playlists.pop();
+          }
+          
+          savePlaylistsToStorage(playlists);
+          renderPlaylists();
         }
-        
-        savePlaylistsToStorage(playlists);
-        renderPlaylists();
-        input.value = '';
-      }
-    });
-    
-    // Add keyboard shortcut for adding playlist
-    document.getElementById('playlist-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        document.getElementById('add-playlist-btn').click();
-      }
+        document.body.removeChild(modal);
+      });
+      
+      // Handle cancel button click
+      cancelBtn.addEventListener('click', function() {
+        document.body.removeChild(modal);
+      });
+      
+      // Handle Enter key
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          addBtn.click();
+        }
+      });
+      
+      // Close on background click
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          document.body.removeChild(modal);
+        }
+      });
     });
     
     // Initialize the playlists on page load
