@@ -118,6 +118,31 @@
       font-size: 14px;
     }
     
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .social-link:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
     .playlists-header {
       display: flex;
       justify-content: space-between;
@@ -203,12 +228,13 @@
     .songs-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 24px;
+      gap: 16px;
+      margin-bottom: 32px;
     }
     
     .song-card {
       background-color: rgba(30, 30, 30, 0.6);
-      padding: 16px;
+      padding: 0;
       border-radius: 8px;
       transition: background-color 0.3s;
       cursor: pointer;
@@ -226,6 +252,7 @@
       background-color: transparent;
       transition: background-color 0.3s;
       pointer-events: none;
+      z-index: 1;
     }
     
     .song-card:hover:before {
@@ -237,19 +264,23 @@
       -webkit-user-drag: none;
     }
     
+    .song-info-container {
+      padding: 12px;
+    }
+    
     .song-img-container {
       width: 100%;
       aspect-ratio: 1;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
       border-radius: 4px;
       overflow: hidden;
-      background-color: #333;
+      background-color: #282828;
     }
     
     .song-img-placeholder {
       width: 100%;
       height: 100%;
-      background-color: #333;
+      background-color: #282828;
       position: relative;
     }
     
@@ -260,7 +291,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(80, 80, 80, 0.3) 0%, rgba(50, 50, 50, 0.3) 100%);
+      background: linear-gradient(135deg, rgba(80, 80, 80, 0.2) 0%, rgba(40, 40, 40, 0.2) 100%);
     }
     
     .song-title {
@@ -483,6 +514,18 @@
         </a>
       </nav>
       
+      <div class="social-links">
+        <a href="https://twitter.com/kimcoin" target="_blank" class="social-link">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://pump.fun" target="_blank" class="social-link">
+          <i class="fas fa-chart-line"></i>
+        </a>
+        <a href="https://dexscreener.com" target="_blank" class="social-link">
+          <i class="fas fa-search-dollar"></i>
+        </a>
+      </div>
+      
       <div class="playlists-header">
         <span>MESSAGES & PLAYLISTS</span>
         <i class="fas fa-plus" id="add-playlist-btn"></i>
@@ -509,36 +552,46 @@
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Rather Kim</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Rather Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Towards Kim', 'Kim Jong Un', 'kim2.jpg', 'towards-kim.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Towards Kim</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Towards Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('This Kim', 'Kim Jong Un', 'kim3.jpg', 'this-kim.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">This Kim</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">This Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('That\'s Kim', 'Kim Jong Un', 'kim4.jpg', 'thats-kim.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">That's Kim</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">That's Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Marry Kim', 'Kim Jong Un', 'kim5.jpg', 'marry-kim.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Marry Kim</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Marry Kim</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
       </div>
       
@@ -548,36 +601,46 @@
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Kim Smile</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Kim Smile</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Kim Cry', 'Kim Jong Un', 'kim7.jpg', 'kim-cry.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Kim Cry</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Kim Cry</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Kim Victory', 'Kim Jong Un', 'kim8.jpg', 'kim-victory.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Kim Victory</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Kim Victory</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Kim Tears', 'Kim Jong Un', 'kim9.jpg', 'kim-tears.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Kim Tears</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Kim Tears</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
         <div class="song-card" onclick="playSong('Kim Forever', 'Kim Jong Un', 'kim10.jpg', 'kim-forever.mp3')">
           <div class="song-img-container">
             <div class="song-img-placeholder"></div>
           </div>
-          <div class="song-title">Kim Forever</div>
-          <div class="song-artist">Kim Jong Un</div>
+          <div class="song-info-container">
+            <div class="song-title">Kim Forever</div>
+            <div class="song-artist">Kim Jong Un</div>
+          </div>
         </div>
       </div>
     </div>
