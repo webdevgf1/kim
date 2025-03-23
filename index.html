@@ -203,6 +203,31 @@
       user-select: none;
     }
     
+    .song-img-container {
+      width: 100%;
+      aspect-ratio: 1;
+      margin-bottom: 0;
+      overflow: hidden;
+      background-color: #282828;
+    }
+    
+    .song-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background-color: #282828;
+      position: relative;
+    }
+    
+    .song-img-placeholder:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(80, 80, 80, 0.2) 0%, rgba(40, 40, 40, 0.2) 100%);
+    }
+    
     .header {
       display: flex;
       justify-content: space-between;
@@ -215,31 +240,83 @@
       font-weight: bold;
     }
     
-    .header a {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .show-all-link {
       color: #b3b3b3;
       text-decoration: none;
       font-size: 14px;
     }
     
-    .header a:hover {
+    .show-all-link:hover {
       color: #fff;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .social-link {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .social-link:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .social-link i {
+      font-size: 14px;
     }
     
     .songs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
       margin-bottom: 32px;
     }
     
+    @media (max-width: 1200px) {
+      .songs-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .songs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .songs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
     .song-card {
-      background-color: rgba(30, 30, 30, 0.6);
+      background-color: #181818;
       padding: 0;
       border-radius: 8px;
       transition: background-color 0.3s;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
     
     .song-card:before {
@@ -265,7 +342,23 @@
     }
     
     .song-info-container {
-      padding: 12px;
+      padding: 16px;
+    }
+    
+    .song-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .song-artist {
+      font-size: 13px;
+      color: #b3b3b3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .song-img-container {
@@ -514,18 +607,6 @@
         </a>
       </nav>
       
-      <div class="social-links">
-        <a href="https://twitter.com/kimcoin" target="_blank" class="social-link">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://pump.fun" target="_blank" class="social-link">
-          <i class="fas fa-chart-line"></i>
-        </a>
-        <a href="https://dexscreener.com" target="_blank" class="social-link">
-          <i class="fas fa-search-dollar"></i>
-        </a>
-      </div>
-      
       <div class="playlists-header">
         <span>MESSAGES & PLAYLISTS</span>
         <i class="fas fa-plus" id="add-playlist-btn"></i>
@@ -544,7 +625,20 @@
     <div class="main-content">
       <div class="header">
         <h1>Kim's Songs</h1>
-        <a href="#">Show all</a>
+        <div class="header-right">
+          <div class="social-links">
+            <a href="https://twitter.com/kimcoin" target="_blank" class="social-link">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://pump.fun" target="_blank" class="social-link">
+              <i class="fas fa-chart-line"></i>
+            </a>
+            <a href="https://dexscreener.com" target="_blank" class="social-link">
+              <i class="fas fa-search-dollar"></i>
+            </a>
+          </div>
+          <a href="#" class="show-all-link">Show all</a>
+        </div>
       </div>
       
       <div class="songs-grid">
