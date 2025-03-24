@@ -1203,6 +1203,196 @@
         width: 200px;
       }
     }
+    /* Kimify Wrapped Styles */
+  .wrapped-container {
+    background: linear-gradient(135deg, #c00000 0%, #8b0000 100%);
+    border-radius: 12px;
+    padding: 32px;
+    color: white;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .wrapped-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png');
+    background-repeat: repeat;
+    background-size: 100px;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+  
+  .wrapped-year {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-family: 'Comfortaa', cursive;
+  }
+  
+  .wrapped-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    font-family: 'Comfortaa', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  
+  @media (max-width: 768px) {
+    .stats-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stats-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .stat-card {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .stat-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  
+  .stat-number {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-family: 'Comfortaa', cursive;
+  }
+  
+  .stat-label {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .top-songs-section {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .top-songs-section h2 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-family: 'Comfortaa', cursive;
+  }
+  
+  .top-songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .top-song-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .top-song-item:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .top-song-number {
+    font-size: 24px;
+    font-weight: bold;
+    min-width: 40px;
+    text-align: center;
+  }
+  
+  .top-song-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-right: 16px;
+    background-color: #333;
+  }
+  
+  .top-song-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .top-song-info {
+    flex: 1;
+  }
+  
+  .top-song-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-family: 'Comfortaa', cursive;
+  }
+  
+  .top-song-artist {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .top-song-plays {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 16px;
+  }
+  
+  .share-section {
+    text-align: center;
+  }
+  
+  .share-btn {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .share-btn:hover {
+    background-color: #333;
+  }
+  
+  .share-warning {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+  }
   </style>
   <!-- Adding Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -1231,6 +1421,10 @@
           <a href="#" class="nav-link" id="liked-songs-link">
             <span class="icon"><i class="fas fa-heart"></i></span>
             <span>Liked Songs</span>
+          </a>
+          <a href="#" class="nav-link" id="wrapped-link">
+            <span class="icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Kimify Wrapped</span>
           </a>
         </nav>
         
@@ -1323,6 +1517,100 @@
   
         <div id="playlist-view" style="display: none;">
           <!-- Playlist view will be populated dynamically -->
+        </div>
+      </div>
+      <div id="wrapped-view" style="display: none;">
+        <div class="header">
+          <h1>Kimify Wrapped</h1>
+        </div>
+        
+        <div class="wrapped-container">
+          <div class="wrapped-year">2025</div>
+          <div class="wrapped-title">Supreme Leader's Year in Review</div>
+          
+          <div class="stats-container">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+              <div class="stat-number">10</div>
+              <div class="stat-label">Failed Missile Launches</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-cut"></i></div>
+              <div class="stat-number">5</div>
+              <div class="stat-label">New Haircuts Approved</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-smile"></i></div>
+              <div class="stat-number">0</div>
+              <div class="stat-label">Happy Residents</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+              <div class="stat-number">147</div>
+              <div class="stat-label">Western Media Outlets Banned</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+              <div class="stat-number">3</div>
+              <div class="stat-label">Grams of Rice Per Citizen</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-medal"></i></div>
+              <div class="stat-number">842</div>
+              <div class="stat-label">New Medals Added to Military Uniform</div>
+            </div>
+          </div>
+          
+          <div class="top-songs-section">
+            <h2>Top Propaganda Hits</h2>
+            <div class="top-songs-list">
+              <div class="top-song-item">
+                <div class="top-song-number">1</div>
+                <div class="top-song-img">
+                  <img src="images/kim1.png" alt="Top song">
+                </div>
+                <div class="top-song-info">
+                  <div class="top-song-title">Death to America (Dance Remix)</div>
+                  <div class="top-song-artist">Kim Jong Un ft. The Moranbong Band</div>
+                </div>
+                <div class="top-song-plays">Played 458 times</div>
+              </div>
+              
+              <div class="top-song-item">
+                <div class="top-song-number">2</div>
+                <div class="top-song-img">
+                  <img src="images/kim2.png" alt="Top song">
+                </div>
+                <div class="top-song-info">
+                  <div class="top-song-title">My Nuclear Button Is Bigger</div>
+                  <div class="top-song-artist">Kim Jong Un</div>
+                </div>
+                <div class="top-song-plays">Played 312 times</div>
+              </div>
+              
+              <div class="top-song-item">
+                <div class="top-song-number">3</div>
+                <div class="top-song-img">
+                  <img src="images/kim3.png" alt="Top song">
+                </div>
+                <div class="top-song-info">
+                  <div class="top-song-title">Internet? Never Heard of It</div>
+                  <div class="top-song-artist">Kim Jong Un</div>
+                </div>
+                <div class="top-song-plays">Played 203 times</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="share-section">
+            <button class="share-btn">Share With The West (Not Recommended)</button>
+            <p class="share-warning">Warning: Sharing may result in re-education.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1673,6 +1961,11 @@
             showView('liked-songs-view');
             loadLikedSongs();
           });
+          document.getElementById('wrapped-link').addEventListener('click', function() {
+  showView('wrapped-view');
+  // Add dramatic animation to stats when viewing wrapped
+  animateWrappedStats();
+});
         }
         
         // Function to show a specific view
@@ -2589,6 +2882,50 @@ function showAddPlaylistModal() {
       createBtn.textContent = originalBtnText;
       createBtn.disabled = false;
     }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const setupShareButton = function() {
+    const shareButton = document.querySelector('.share-btn');
+    if (shareButton) {
+      shareButton.addEventListener('click', showErrorDialog);
+    }
+  };
+  
+  // Try to set up immediately
+  setupShareButton();
+  
+  // Also try after a short delay in case the DOM isn't fully loaded
+  setTimeout(setupShareButton, 1000);
+});
+
+function animateWrappedStats() {
+  const statNumbers = document.querySelectorAll('.stat-number');
+  
+  statNumbers.forEach(statElement => {
+    const targetValue = parseInt(statElement.textContent);
+    
+    // Reset to zero
+    statElement.textContent = '0';
+    
+    // Animate to target value
+    let currentValue = 0;
+    const duration = 2000; // 2 seconds
+    const interval = 16; // ~60fps
+    const steps = duration / interval;
+    const increment = targetValue / steps;
+    
+    const counter = setInterval(() => {
+      currentValue += increment;
+      
+      if (currentValue >= targetValue) {
+        statElement.textContent = targetValue;
+        clearInterval(counter);
+      } else {
+        statElement.textContent = Math.floor(currentValue);
+      }
+    }, interval);
   });
 }
   </script>
