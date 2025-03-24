@@ -2174,44 +2174,34 @@
         const RECENTLY_PLAYED_KEY = 'kimify-recently-played';
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-          // Load songs to the home view
-          loadSongs();
-          
-          // Setup navigation
-          setupNavigation();
-          
-          // Initialize search functionality
-          initSearch();
-          
-          // Load playlists
-          loadPlaylists();
-          
-          // Setup like button functionality
-          document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
-          
-          // Initialize volume display
-          setVolumePercent(audioPlayer.volume);
-          
-          // Setup add playlist button
-          document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
-    
-          // Add styles for song selection and image preview
-          addNewStyles();
-          
-          // Setup share button in the wrapped modal
-          const setupShareButton = function() {
-            const shareButton = document.querySelector('.share-btn');
-            if (shareButton) {
-              shareButton.addEventListener('click', showErrorDialog);
-            }
-          };
-          
-          // Try to set up immediately
-          setupShareButton();
-          
-          // Also try after a short delay in case the DOM isn't fully loaded
-          setTimeout(setupShareButton, 1000);
-        });
+  // Existing initialization code
+  loadSongs();
+  setupNavigation();
+  initSearch();
+  loadPlaylists();
+  document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
+  setVolumePercent(audioPlayer.volume);
+  document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
+  addNewStyles();
+  
+  // Add new feature initializations
+  addMapNavLink();
+  addMemeNavLink();
+  
+  // Setup share button in the wrapped modal
+  const setupShareButton = function() {
+    const shareButton = document.querySelector('.share-btn');
+    if (shareButton) {
+      shareButton.addEventListener('click', showErrorDialog);
+    }
+  };
+  
+  // Try to set up immediately
+  setupShareButton();
+  
+  // Also try after a short delay in case the DOM isn't fully loaded
+  setTimeout(setupShareButton, 1000);
+});
         
         // Function to add styles for Supabase implementation
         function addNewStyles() {
