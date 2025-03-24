@@ -4222,19 +4222,46 @@ function addMapNavLink() {
               <div id="north-korea-map-container">
                 <!-- SVG Map will go here -->
                 <svg width="100%" height="100%" viewBox="0 0 800 600" id="nk-map-svg">
-                  <!-- Base map of North Korea -->
-                  <path d="M400,100 Q530,150 600,300 Q640,400 600,500 Q530,570 400,580 Q270,570 200,500 Q160,400 200,300 Q270,150 400,100" fill="#f4f4f4" stroke="#666" stroke-width="2" />
+                  <!-- Base map of North Korea with more accurate geography -->
+                  <path d="M400,100 C460,110 520,130 550,160 C580,190 600,230 605,270 
+                           C610,310 600,350 590,380 C580,410 560,440 530,470 
+                           C500,500 460,520 420,530 C380,540 340,540 300,530 
+                           C260,520 230,500 200,470 C170,440 150,400 140,360 
+                           C130,320 135,280 150,240 C165,200 190,170 220,140 
+                           C250,110 290,105 340,100 C360,98 380,98 400,100 Z" 
+                        fill="#f4f4f4" stroke="#666" stroke-width="2" />
                   
-                  <!-- Major cities/regions -->
-                  <circle cx="400" cy="250" r="15" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Pyongyang" data-listeners="1245" />
-                  <circle cx="480" cy="180" r="8" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Hamhung" data-listeners="367" />
-                  <circle cx="300" cy="200" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Nampo" data-listeners="234" />
-                  <circle cx="350" cy="350" r="9" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Wonsan" data-listeners="301" />
-                  <circle cx="500" cy="400" r="6" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Chongjin" data-listeners="189" />
-                  <circle cx="250" cy="300" r="5" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Sinuiju" data-listeners="147" />
+                  <!-- Border with China and Russia to the north -->
+                  <path d="M150,240 C165,200 190,170 220,140 C250,110 290,105 340,100 C360,98 380,98 400,100 C460,110 520,130 550,160 C580,190 600,230 605,270" 
+                        fill="none" stroke="#333" stroke-width="3" stroke-dasharray="10,5" />
                   
-                  <!-- Borders -->
-                  <path d="M200,300 Q170,200 230,150 Q300,120 400,100 Q500,120 570,150 Q630,200 600,300" fill="none" stroke="#333" stroke-width="3" stroke-dasharray="10,5" />
+                  <!-- Border with South Korea (DMZ) -->
+                  <path d="M150,240 C180,250 220,255 260,250 C300,245 340,240 380,245 C420,250 460,260 500,270 C540,280 580,290 605,270" 
+                        fill="none" stroke="#c00000" stroke-width="4" stroke-dasharray="5,5" />
+                  
+                  <!-- Yellow Sea coastline -->
+                  <path d="M150,240 C140,280 135,320 140,360 C145,400 160,430 180,460" 
+                        fill="none" stroke="#0066cc" stroke-width="2" />
+                  
+                  <!-- Sea of Japan/East Sea coastline -->
+                  <path d="M605,270 C600,310 590,350 570,390 C550,430 520,460 490,480" 
+                        fill="none" stroke="#0066cc" stroke-width="2" />
+                  
+                  <!-- Major cities/regions with more accurate positions -->
+                  <circle cx="380" cy="235" r="15" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Pyongyang" data-listeners="1245" />
+                  <circle cx="500" cy="210" r="8" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Hamhung" data-listeners="367" />
+                  <circle cx="320" cy="260" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Nampo" data-listeners="234" />
+                  <circle cx="450" cy="290" r="9" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Wonsan" data-listeners="301" />
+                  <circle cx="520" cy="170" r="6" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Chongjin" data-listeners="189" />
+                  <circle cx="180" cy="220" r="5" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Sinuiju" data-listeners="147" />
+                  <circle cx="400" cy="320" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Kaesong" data-listeners="213" />
+                  
+                  <!-- Text labels for neighboring countries -->
+                  <text x="300" y="80" fill="#666" font-size="16" font-weight="bold">CHINA</text>
+                  <text x="580" y="100" fill="#666" font-size="16" font-weight="bold">RUSSIA</text>
+                  <text x="350" y="400" fill="#666" font-size="16" font-weight="bold">SOUTH KOREA</text>
+                  <text x="100" y="350" fill="#0066cc" font-size="14" font-style="italic">Yellow Sea</text>
+                  <text x="600" y="350" fill="#0066cc" font-size="14" font-style="italic">Sea of Japan</text>
                 </svg>
                 
                 <div id="map-tooltip" class="map-tooltip" style="display: none;">
