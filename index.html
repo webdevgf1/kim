@@ -2342,176 +2342,255 @@
       `;
     }
     // Function to show the add playlist modal
-    function showAddPlaylistModal() {
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
+    // Function to show the add playlist modal
+function showAddPlaylistModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  
+  const content = document.createElement('div');
+  content.className = 'modal-content';
+  
+  // Create song images for selection instead of checkboxes
+  const songSelectionGrid = songs
+    .filter(song => song.id !== 'song8') // Filter out BTS song
+    .map(song => `
+      <div class="song-selection-tile" data-song-id="${song.id}">
+        <img src="images/${song.imageFile}" alt="${song.title}" class="song-selection-img">
+        <div class="song-selection-title">${song.title}</div>
+        <div class="song-selection-overlay"></div>
+      </div>
+    `).join('');
+  
+  content.innerHTML = `
+    <div class="modal-header">
+      <h2>Create Playlist</h2>
+    </div>
+    
+    <div class="modal-form">
+      <div class="modal-form-group">
+        <label for="playlist-name">Playlist Name</label>
+        <input type="text" id="playlist-name" placeholder="My Kim Playlist">
+      </div>
       
-      const content = document.createElement('div');
-      content.className = 'modal-content';
+      <div class="modal-form-group">
+        <label for="playlist-description">Description</label>
+        <textarea id="playlist-description" placeholder="Add an optional description"></textarea>
+      </div>
       
-      // Create song checkboxes for selection
-      const songCheckboxes = songs
-        .filter(song => song.id !== 'song8') // Filter out BTS song
-        .map(song => `
-          <div class="song-selection-item">
-            <input type="checkbox" id="song-${song.id}" value="${song.id}" class="song-checkbox">
-            <label for="song-${song.id}">
-              <img src="images/${song.imageFile}" alt="${song.title}" class="song-selection-img">
-              <span>${song.title}</span>
-            </label>
-          </div>
-        `).join('');
-      
-      content.innerHTML = `
-        <div class="modal-header">
-          <h2>Create Playlist</h2>
+      <div class="modal-form-group">
+        <label>Cover Image</label>
+        <input type="file" id="cover-upload" accept="image/*">
+        <div class="image-preview" id="cover-preview">
+          <span>No image selected</span>
         </div>
-        
-        <div class="modal-form">
-          <div class="modal-form-group">
-            <label for="playlist-name">Playlist Name</label>
-            <input type="text" id="playlist-name" placeholder="My Kim Playlist">
-          </div>
-          
-          <div class="modal-form-group">
-            <label for="playlist-description">Description</label>
-            <textarea id="playlist-description" placeholder="Add an optional description"></textarea>
-          </div>
-          
-          <div class="modal-form-group">
-            <label>Cover Image</label>
-            <input type="file" id="cover-upload" accept="image/*">
-            <div class="image-preview" id="cover-preview">
-              <span>No image selected</span>
-            </div>
-          </div>
-          
-          <div class="modal-form-group">
-            <label>Select Songs (At least one)</label>
-            <div class="song-selection">
-              ${songCheckboxes}
-            </div>
-          </div>
+      </div>
+      
+      <div class="modal-form-group">
+        <label>Select Songs (At least one)</label>
+        <div class="song-selection-grid">
+          ${songSelectionGrid}
         </div>
-        
-        <div class="modal-footer">
-          <button class="modal-btn modal-btn-cancel" id="cancel-playlist">Cancel</button>
-          <button class="modal-btn modal-btn-primary" id="create-playlist">Create</button>
-        </div>
-      `;
-      
-      overlay.appendChild(content);
-      document.body.appendChild(overlay);
-      
-      // Setup image uploader and preview
-      const fileInput = content.querySelector('#cover-upload');
-      const imagePreview = content.querySelector('#cover-preview');
-      let uploadedImage = null;
-      
-      fileInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-          uploadedImage = file;
-          
-          // Preview the image
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded cover">`;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-      
-      // Cancel button
-      content.querySelector('#cancel-playlist').addEventListener('click', function() {
-        document.body.removeChild(overlay);
-      });
-      
-      // Create button
-      content.querySelector('#create-playlist').addEventListener('click', async function() {
-        const name = content.querySelector('#playlist-name').value.trim();
-        const description = content.querySelector('#playlist-description').value.trim();
-        
-        // Validation
-        if (!name) {
-          alert('Please enter a playlist name');
-          return;
-        }
-        
-        if (!uploadedImage) {
-          alert('Please upload a cover image');
-          return;
-        }
-        
-        // Get selected songs
-        const selectedSongs = Array.from(content.querySelectorAll('.song-checkbox:checked'))
-          .map(checkbox => checkbox.value);
-        
-        if (selectedSongs.length === 0) {
-          alert('Please select at least one song');
-          return;
-        }
-        
-        // Show loading state
-        const createBtn = content.querySelector('#create-playlist');
-        const originalBtnText = createBtn.textContent;
-        createBtn.textContent = 'Creating...';
-        createBtn.disabled = true;
-        
-        try {
-          // 1. Upload the image to Supabase Storage
-          const filename = `playlist-cover-${Date.now()}-${uploadedImage.name}`;
-          
-          const { data: uploadData, error: uploadError } = await supabase
-            .storage
-            .from('playlist-covers')
-            .upload(filename, uploadedImage);
-          
-          if (uploadError) throw uploadError;
-          
-          // 2. Get the public URL for the uploaded image
-          const { data: { publicUrl } } = supabase
-            .storage
-            .from('playlist-covers')
-            .getPublicUrl(filename);
-          
-          // 3. Create a new playlist record
-          const playlistData = {
-            name: name,
-            description: description || 'No description',
-            image_url: publicUrl,
-            songs: selectedSongs,
-            is_user_created: true,
-            created_at: new Date().toISOString()
-          };
-          
-          const { data: playlist, error: insertError } = await supabase
-            .from('playlists')
-            .insert(playlistData)
-            .select()
-            .single();
-          
-          if (insertError) throw insertError;
-          
-          // 4. Reload playlists
-          await loadPlaylists();
-          
-          // 5. Close the modal
-          document.body.removeChild(overlay);
-          
-          // 6. Show the new playlist
-          loadPlaylistView(playlist.id);
-          
-        } catch (error) {
-          console.error('Error creating playlist:', error);
-          alert('An error occurred while creating the playlist. Please try again.');
-          
-          // Reset button state
-          createBtn.textContent = originalBtnText;
-          createBtn.disabled = false;
-        }
-      });
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" id="cancel-playlist">Cancel</button>
+      <button class="modal-btn modal-btn-primary" id="create-playlist">Create</button>
+    </div>
+  `;
+  
+  // Add styles for the song selection grid
+  const styleElement = document.createElement('style');
+  styleElement.textContent = `
+    .song-selection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #333;
+      border-radius: 4px;
     }
+    
+    .song-selection-tile {
+      position: relative;
+      cursor: pointer;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.2s;
+      aspect-ratio: 1;
+    }
+    
+    .song-selection-tile:hover {
+      transform: scale(1.05);
+    }
+    
+    .song-selection-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .song-selection-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      font-size: 12px;
+      text-align: center;
+    }
+    
+    .song-selection-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(29, 185, 84, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .song-selection-overlay::after {
+      content: '✓';
+      font-size: 32px;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .song-selection-tile.selected .song-selection-overlay {
+      opacity: 1;
+    }
+  `;
+  document.head.appendChild(styleElement);
+  
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+  
+  // Setup song selection by clicking on images
+  const songTiles = content.querySelectorAll('.song-selection-tile');
+  songTiles.forEach(tile => {
+    tile.addEventListener('click', function() {
+      this.classList.toggle('selected');
+    });
+  });
+  
+  // Setup image uploader and preview
+  const fileInput = content.querySelector('#cover-upload');
+  const imagePreview = content.querySelector('#cover-preview');
+  let uploadedImage = null;
+  
+  fileInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      uploadedImage = file;
+      
+      // Preview the image
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded cover">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  
+  // Cancel button
+  content.querySelector('#cancel-playlist').addEventListener('click', function() {
+    document.body.removeChild(overlay);
+  });
+  
+  // Create button
+  content.querySelector('#create-playlist').addEventListener('click', async function() {
+    const name = content.querySelector('#playlist-name').value.trim();
+    const description = content.querySelector('#playlist-description').value.trim();
+    
+    // Validation
+    if (!name) {
+      alert('Please enter a playlist name');
+      return;
+    }
+    
+    if (!uploadedImage) {
+      alert('Please upload a cover image');
+      return;
+    }
+    
+    // Get selected songs
+    const selectedSongs = Array.from(content.querySelectorAll('.song-selection-tile.selected'))
+      .map(tile => tile.dataset.songId);
+    
+    if (selectedSongs.length === 0) {
+      alert('Please select at least one song');
+      return;
+    }
+    
+    // Show loading state
+    const createBtn = content.querySelector('#create-playlist');
+    const originalBtnText = createBtn.textContent;
+    createBtn.textContent = 'Creating...';
+    createBtn.disabled = true;
+    
+    try {
+      // 1. Upload the image to Supabase Storage
+      const filename = `playlist-cover-${Date.now()}-${uploadedImage.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase
+        .storage
+        .from('playlist-covers')
+        .upload(filename, uploadedImage);
+      
+      if (uploadError) throw uploadError;
+      
+      // 2. Get the public URL for the uploaded image
+      const { data: { publicUrl } } = supabase
+        .storage
+        .from('playlist-covers')
+        .getPublicUrl(filename);
+      
+      // 3. Create a new playlist record
+      const playlistData = {
+        name: name,
+        description: description || 'No description',
+        image_url: publicUrl,
+        songs: selectedSongs,
+        is_user_created: true,
+        created_at: new Date().toISOString()
+      };
+      
+      const { data: playlist, error: insertError } = await supabase
+        .from('playlists')
+        .insert(playlistData)
+        .select()
+        .single();
+      
+      if (insertError) throw insertError;
+      
+      // 4. Reload playlists
+      await loadPlaylists();
+      
+      // 5. Close the modal
+      document.body.removeChild(overlay);
+      
+      // 6. Show the new playlist
+      loadPlaylistView(playlist.id);
+      
+    } catch (error) {
+      console.error('Error creating playlist:', error);
+      alert('An error occurred while creating the playlist. Please try again.');
+      
+      // Reset button state
+      createBtn.textContent = originalBtnText;
+      createBtn.disabled = false;
+    }
+  });
+}
   </script>
 </body>
 </html>
