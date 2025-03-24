@@ -6,8 +6,6 @@
   <title>Kimify - Kim Jong Un Remixes</title>
   <!-- Favicon -->
   <link rel="icon" href="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" type="image/png">
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
   <style>
     /* Font imports */
     @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
@@ -1150,6 +1148,47 @@
       height: 100%;
       object-fit: cover;
     }
+    
+    /* Song selection styles */
+    .song-selection {
+      max-height: 200px;
+      overflow-y: auto;
+      background-color: #333;
+      border-radius: 4px;
+      padding: 10px;
+    }
+    
+    .song-selection-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .song-selection-item:hover {
+      background-color: #444;
+    }
+    
+    .song-selection-item input {
+      margin-right: 8px;
+    }
+    
+    .song-selection-item label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .song-selection-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      margin-right: 12px;
+      object-fit: cover;
+    }
 
     @media (max-width: 768px) {
       .container {
@@ -1169,415 +1208,484 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <div class="sidebar">
-      <div class="logo">
-        <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Kimify Logo" class="logo-img">
-        <span>Kimify</span>
+    <div class="container">
+      <div class="sidebar">
+        <div class="logo">
+          <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Kimify Logo" class="logo-img">
+          <span>Kimify</span>
+        </div>
+        
+        <nav>
+          <a href="#" class="nav-link" id="home-link">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span>Home</span>
+          </a>
+          <a href="#" class="nav-link" id="search-link">
+            <span class="icon"><i class="fas fa-search"></i></span>
+            <span>Search</span>
+          </a>
+          <a href="#" class="nav-link" id="recently-played-link">
+            <span class="icon"><i class="fas fa-history"></i></span>
+            <span>Recently Played</span>
+          </a>
+          <a href="#" class="nav-link" id="liked-songs-link">
+            <span class="icon"><i class="fas fa-heart"></i></span>
+            <span>Liked Songs</span>
+          </a>
+        </nav>
+        
+        <div class="playlists-header">
+          <span>PLAYLISTS</span>
+          <i class="fas fa-plus" id="add-playlist-btn"></i>
+        </div>
+        
+        <ul class="playlists-list" id="playlists-container">
+          <!-- Playlists will be loaded here -->
+          <div class="loader"></div>
+        </ul>
       </div>
       
-      <nav>
-        <a href="#" class="nav-link" id="home-link">
-          <span class="icon"><i class="fas fa-home"></i></span>
-          <span>Home</span>
-        </a>
-        <a href="#" class="nav-link" id="search-link">
-          <span class="icon"><i class="fas fa-search"></i></span>
-          <span>Search</span>
-        </a>
-        <a href="#" class="nav-link" id="recently-played-link">
-          <span class="icon"><i class="fas fa-history"></i></span>
-          <span>Recently Played</span>
-        </a>
-        <a href="#" class="nav-link" id="liked-songs-link">
-          <span class="icon"><i class="fas fa-heart"></i></span>
-          <span>Liked Songs</span>
-        </a>
-      </nav>
-      
-      <div class="playlists-header">
-        <span>PLAYLISTS</span>
-        <i class="fas fa-plus" id="add-playlist-btn"></i>
-      </div>
-      
-      <ul class="playlists-list" id="playlists-container">
-        <!-- Playlists will be loaded here -->
-        <div class="loader"></div>
-      </ul>
-    </div>
-    
-    <div class="main-content" id="main-content">
-      <!-- Main content will change based on selected view -->
-      <div id="home-view">
-        <div class="header">
-          <h1>Kim's Songs</h1>
-          <div class="header-right">
-            <div class="social-links">
-              <a href="https://twitter.com/kimcoin" target="_blank" class="social-link">
-                <div class="social-icon-wrapper">
-                  <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e0930241517bce72bf2df2_Logo_of_Twitter.svg.png" alt="Twitter" class="social-icon">
-                </div>
-              </a>
-              <a href="https://discord.com" target="_blank" class="social-link">
-                <div class="social-icon-wrapper">
-                  <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09302ce2c79cb6daaebcc_Pump_fun_logo%20(2).png" alt="pump.fun" class="social-icon">
-                </div>
-              </a>
-              <a href="https://dexscreener.com" target="_blank" class="social-link">
-                <div class="social-icon-wrapper">
-                  <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e093028190f33913455b57_dex-screener-seeklogo.png" alt="DexScreener" class="social-icon">
-                </div>
-              </a>
+      <div class="main-content" id="main-content">
+        <!-- Main content will change based on selected view -->
+        <div id="home-view">
+          <div class="header">
+            <h1>Kim's Songs</h1>
+            <div class="header-right">
+              <div class="social-links">
+                <a href="https://twitter.com/kimcoin" target="_blank" class="social-link">
+                  <div class="social-icon-wrapper">
+                    <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e0930241517bce72bf2df2_Logo_of_Twitter.svg.png" alt="Twitter" class="social-icon">
+                  </div>
+                </a>
+                <a href="https://discord.com" target="_blank" class="social-link">
+                  <div class="social-icon-wrapper">
+                    <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09302ce2c79cb6daaebcc_Pump_fun_logo%20(2).png" alt="pump.fun" class="social-icon">
+                  </div>
+                </a>
+                <a href="https://dexscreener.com" target="_blank" class="social-link">
+                  <div class="social-icon-wrapper">
+                    <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e093028190f33913455b57_dex-screener-seeklogo.png" alt="DexScreener" class="social-icon">
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="songs-grid" id="songs-grid">
+            <!-- Song cards will be loaded here -->
+          </div>
+        </div>
+  
+        <div id="search-view" style="display: none;">
+          <div class="header">
+            <h1>Search</h1>
+          </div>
+          
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="search-input" placeholder="Search for songs or artists...">
+            <i class="fas fa-times clear-search" id="clear-search"></i>
+          </div>
+          
+          <div id="search-results">
+            <!-- Search results will appear here -->
+            <div class="search-message" id="search-message">
+              <p>Start typing to search</p>
             </div>
           </div>
         </div>
-        
-        <div class="songs-grid" id="songs-grid">
-          <!-- Song cards will be loaded here -->
+  
+        <div id="recently-played-view" style="display: none;">
+          <div class="header">
+            <h1>Recently Played</h1>
+          </div>
+          
+          <div id="recently-played-container">
+            <!-- Recently played songs will appear here -->
+            <p class="empty-message" id="recently-played-empty" style="display: none;">
+              You haven't played any songs yet.
+            </p>
+          </div>
+        </div>
+  
+        <div id="liked-songs-view" style="display: none;">
+          <div class="header">
+            <h1>Liked Songs</h1>
+          </div>
+          
+          <div id="liked-songs-container">
+            <!-- Liked songs will appear here -->
+            <p class="empty-message" id="liked-songs-empty" style="display: none;">
+              You haven't liked any songs yet.
+            </p>
+          </div>
+        </div>
+  
+        <div id="playlist-view" style="display: none;">
+          <!-- Playlist view will be populated dynamically -->
         </div>
       </div>
-
-      <div id="search-view" style="display: none;">
-        <div class="header">
-          <h1>Search</h1>
+    </div>
+    
+    <div class="player">
+      <div class="now-playing">
+        <div class="now-playing-img-container" id="current-song-img-container">
+          <div class="now-playing-img-placeholder"></div>
         </div>
-        
-        <div class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" id="search-input" placeholder="Search for songs or artists...">
-          <i class="fas fa-times clear-search" id="clear-search"></i>
+        <div class="song-info">
+          <div class="song-title" id="current-song-title">Select a song</div>
+          <div class="song-artist" id="current-song-artist"></div>
         </div>
-        
-        <div id="search-results">
-          <!-- Search results will appear here -->
-          <div class="search-message" id="search-message">
-            <p>Start typing to search</p>
+        <div class="like-btn" id="current-song-like">
+          <span class="heart-icon">
+            <i class="fa fa-heart-o"></i>
+            <i class="fa fa-heart"></i>
+          </span>
+        </div>
+      </div>
+      
+      <div class="player-controls">
+        <div class="control-buttons">
+          <i class="fas fa-step-backward"></i>
+          <button class="play-btn" onclick="togglePlay()">
+            <i class="fas fa-play" id="play-icon"></i>
+          </button>
+          <i class="fas fa-step-forward"></i>
+          <i class="fas fa-repeat"></i>
+        </div>
+        <div class="player-timeline-container">
+          <span id="current-time">0:00</span>
+          <div class="player-timeline">
+            <div class="timeline-progress" id="song-progress"></div>
+            <div class="timeline-handle" id="progress-handle"></div>
+          </div>
+          <span id="song-duration">0:00</span>
+        </div>
+      </div>
+      
+      <div class="volume-controls">
+        <i class="fas fa-volume-up" id="volume-icon"></i>
+        <div class="volume-slider-container">
+          <div class="volume-bar">
+            <div class="volume-progress"></div>
+            <div class="volume-handle"></div>
           </div>
         </div>
       </div>
-
-      <div id="recently-played-view" style="display: none;">
-        <div class="header">
-          <h1>Recently Played</h1>
-        </div>
-        
-        <div id="recently-played-container">
-          <!-- Recently played songs will appear here -->
-          <p class="empty-message" id="recently-played-empty" style="display: none;">
-            You haven't played any songs yet.
-          </p>
-        </div>
-      </div>
-
-      <div id="liked-songs-view" style="display: none;">
-        <div class="header">
-          <h1>Liked Songs</h1>
-        </div>
-        
-        <div id="liked-songs-container">
-          <!-- Liked songs will appear here -->
-          <p class="empty-message" id="liked-songs-empty" style="display: none;">
-            You haven't liked any songs yet.
-          </p>
-        </div>
-      </div>
-
-      <div id="playlist-view" style="display: none;">
-        <!-- Playlist view will be populated dynamically -->
-      </div>
     </div>
-  </div>
   
-  <div class="player">
-    <div class="now-playing">
-      <div class="now-playing-img-container" id="current-song-img-container">
-        <div class="now-playing-img-placeholder"></div>
-      </div>
-      <div class="song-info">
-        <div class="song-title" id="current-song-title">Select a song</div>
-        <div class="song-artist" id="current-song-artist"></div>
-      </div>
-      <div class="like-btn" id="current-song-like">
-        <span class="heart-icon">
-          <i class="fa fa-heart-o"></i>
-          <i class="fa fa-heart"></i>
-        </span>
-      </div>
-    </div>
+    <!-- Audio element to handle actual playback -->
+    <audio id="audio-player" src=""></audio>
     
-    <div class="player-controls">
-      <div class="control-buttons">
-        <i class="fas fa-step-backward"></i>
-        <button class="play-btn" onclick="togglePlay()">
-          <i class="fas fa-play" id="play-icon"></i>
-        </button>
-        <i class="fas fa-step-forward"></i>
-        <i class="fas fa-repeat"></i>
-      </div>
-      <div class="player-timeline-container">
-        <span id="current-time">0:00</span>
-        <div class="player-timeline">
-          <div class="timeline-progress" id="song-progress"></div>
-          <div class="timeline-handle" id="progress-handle"></div>
-        </div>
-        <span id="song-duration">0:00</span>
-      </div>
-    </div>
-    
-    <div class="volume-controls">
-      <i class="fas fa-volume-up" id="volume-icon"></i>
-      <div class="volume-slider-container">
-        <div class="volume-bar">
-          <div class="volume-progress"></div>
-          <div class="volume-handle"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Audio element to handle actual playback -->
-  <audio id="audio-player" src=""></audio>
-  
-  <script>
-    // Prevent text selection to avoid flickering
-    document.addEventListener('mousedown', function(e) {
-      if (e.detail > 1) {
-        e.preventDefault();
-      }
-    }, false);
-    
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDv5P0xNnXYNB2hHnmkZV2rHWYOI17QxL0",
-      authDomain: "kimify-music.firebaseapp.com",
-      projectId: "kimify-music",
-      storageBucket: "kimify-music.appspot.com",
-      messagingSenderId: "235465912343",
-      appId: "1:235465912343:web:a66e41f71a6d85e7c73a06"
-    };
-    
-    // Database references
-    let db;
-    let playlistsRef;
-    let songsRef;
-    
-    // Mock data for songs
-    const songs = [
-      { 
-        id: 'song1', 
-        title: 'Rather Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim1.png', 
-        audioFile: 'kim1.mp3' 
-      },
-      { 
-        id: 'song2', 
-        title: 'Towards Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim2.png', 
-        audioFile: 'kim2.mp3' 
-      },
-      { 
-        id: 'song3', 
-        title: 'This Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim3.png', 
-        audioFile: 'kim3.mp3' 
-      },
-      { 
-        id: 'song4', 
-        title: 'That\'s Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim4.png', 
-        audioFile: 'kim4.mp3' 
-      },
-      { 
-        id: 'song5', 
-        title: 'Marry Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim5.png', 
-        audioFile: 'kim5.mp3' 
-      },
-      { 
-        id: 'song6', 
-        title: 'Kim Smile', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim6.png', 
-        audioFile: 'kim6.mp3' 
-      },
-      { 
-        id: 'song7', 
-        title: 'Kim Cry', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim7.png', 
-        audioFile: 'kim7.mp3' 
-      },
-      { 
-        id: 'song8', 
-        title: 'Dynamite', 
-        artist: 'BTS', 
-        imageFile: 'BTS.png', 
-        audioFile: 'bts.mp3' 
-      }
-    ];
-    
-    // Default playlists
-    const defaultPlaylists = [
-      {
-        id: 'playlist1',
-        name: 'Top Kim Songs',
-        description: 'The best songs from our Great Leader',
-        image: 'kim1.png',
-        songs: ['song1', 'song2', 'song3']
-      },
-      {
-        id: 'playlist2',
-        name: 'Kim is the Greatest',
-        description: 'A collection of hits celebrating our Supreme Leader',
-        image: 'kim2.png',
-        songs: ['song2', 'song4', 'song6']
-      },
-      {
-        id: 'playlist3',
-        name: 'PYONGYANG ANTHEM',
-        description: 'Official anthems of our glorious capital',
-        image: 'kim3.png',
-        songs: ['song3', 'song5', 'song7']
-      }
-    ];
-    
-    // Keep track of the current song and play state
-    let currentSong = null;
-    let isPlaying = false;
-    const audioPlayer = document.getElementById('audio-player');
-    
-    // Initialize volume
-    audioPlayer.volume = 0.7; // 70% volume by default
-    
-    // Track whether we're dragging the timeline handle
-    let isDraggingProgress = false;
-    let isDraggingVolume = false;
-    
-    // Local storage keys
-    const LIKED_SONGS_KEY = 'kimify-liked-songs';
-    const RECENTLY_PLAYED_KEY = 'kimify-recently-played';
-    
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', function() {
-      // Load songs to the home view
-      loadSongs();
-      
-      // Setup navigation
-      setupNavigation();
-      
-      // Initialize search functionality
-      initSearch();
-      
-      // Load playlists
-      loadPlaylists();
-      
-      // Setup like button functionality
-      document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
-      
-      // Initialize volume display
-      setVolumePercent(audioPlayer.volume);
-      
-      // Setup add playlist button
-      document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
-    });
-    
-    // Function to load songs to the home view
-    function loadSongs() {
-      const songsGrid = document.getElementById('songs-grid');
-      songsGrid.innerHTML = '';
-      
-      songs.forEach(song => {
-        const songCard = document.createElement('div');
-        songCard.className = 'song-card';
-        songCard.dataset.songId = song.id;
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Prevent text selection to avoid flickering
+        document.addEventListener('mousedown', function(e) {
+          if (e.detail > 1) {
+            e.preventDefault();
+          }
+        }, false);
         
-        if (song.id === 'song8') {
-          // BTS song should show the error dialog
-          songCard.onclick = showErrorDialog;
-        } else {
-          songCard.onclick = () => playSong(song.id);
+        // Initialize Supabase Client - Replace with your actual project values
+        const supabaseUrl = 'https://your-project-id.supabase.co';
+        const supabaseKey = 'your-anon-key'; // Get this from your Supabase project settings
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Mock data for songs
+        const songs = [
+          { 
+            id: 'song1', 
+            title: 'Rather Kim', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim1.png', 
+            audioFile: 'kim1.mp3' 
+          },
+          { 
+            id: 'song2', 
+            title: 'Towards Kim', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim2.png', 
+            audioFile: 'kim2.mp3' 
+          },
+          { 
+            id: 'song3', 
+            title: 'This Kim', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim3.png', 
+            audioFile: 'kim3.mp3' 
+          },
+          { 
+            id: 'song4', 
+            title: 'That\'s Kim', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim4.png', 
+            audioFile: 'kim4.mp3' 
+          },
+          { 
+            id: 'song5', 
+            title: 'Marry Kim', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim5.png', 
+            audioFile: 'kim5.mp3' 
+          },
+          { 
+            id: 'song6', 
+            title: 'Kim Smile', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim6.png', 
+            audioFile: 'kim6.mp3' 
+          },
+          { 
+            id: 'song7', 
+            title: 'Kim Cry', 
+            artist: 'Kim Jong Un', 
+            imageFile: 'kim7.png', 
+            audioFile: 'kim7.mp3' 
+          },
+          { 
+            id: 'song8', 
+            title: 'Dynamite', 
+            artist: 'BTS', 
+            imageFile: 'BTS.png', 
+            audioFile: 'bts.mp3' 
+          }
+        ];
+        
+        // Default playlists
+        const defaultPlaylists = [
+          {
+            id: 'playlist1',
+            name: 'Top Kim Songs',
+            description: 'The best songs from our Great Leader',
+            image: 'kim1.png',
+            songs: ['song1', 'song2', 'song3']
+          },
+          {
+            id: 'playlist2',
+            name: 'Kim is the Greatest',
+            description: 'A collection of hits celebrating our Supreme Leader',
+            image: 'kim2.png',
+            songs: ['song2', 'song4', 'song6']
+          },
+          {
+            id: 'playlist3',
+            name: 'PYONGYANG ANTHEM',
+            description: 'Official anthems of our glorious capital',
+            image: 'kim3.png',
+            songs: ['song3', 'song5', 'song7']
+          }
+        ];
+        
+        // Keep track of the current song and play state
+        let currentSong = null;
+        let isPlaying = false;
+        const audioPlayer = document.getElementById('audio-player');
+        
+        // Initialize volume
+        audioPlayer.volume = 0.7; // 70% volume by default
+        
+        // Track whether we're dragging the timeline handle
+        let isDraggingProgress = false;
+        let isDraggingVolume = false;
+        
+        // Local storage keys
+        const LIKED_SONGS_KEY = 'kimify-liked-songs';
+        const RECENTLY_PLAYED_KEY = 'kimify-recently-played';
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+          // Load songs to the home view
+          loadSongs();
+          
+          // Setup navigation
+          setupNavigation();
+          
+          // Initialize search functionality
+          initSearch();
+          
+          // Load playlists
+          loadPlaylists();
+          
+          // Setup like button functionality
+          document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
+          
+          // Initialize volume display
+          setVolumePercent(audioPlayer.volume);
+          
+          // Setup add playlist button
+          document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
+    
+          // Add styles for song selection and image preview
+          addNewStyles();
+        });
+        
+        // Function to add styles for Supabase implementation
+        function addNewStyles() {
+          const styleElement = document.createElement('style');
+          styleElement.textContent = `
+            /* Upload image preview */
+            .image-preview {
+              width: 100%;
+              height: 150px;
+              background-color: #333;
+              border-radius: 4px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              margin-top: 8px;
+            }
+            
+            .image-preview img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            #cover-upload {
+              background-color: #333;
+              color: white;
+              padding: 8px;
+              border-radius: 4px;
+              width: 100%;
+            }
+          `;
+          document.head.appendChild(styleElement);
         }
         
-        songCard.innerHTML = `
-          <div class="song-img-container">
-            <img src="images/${song.imageFile}" alt="${song.title}" class="song-img">
-          </div>
-          <div class="song-info-container">
-            <div class="song-title">${song.title}</div>
-            <div class="song-artist">${song.artist}</div>
-          </div>
-        `;
-        
-        songsGrid.appendChild(songCard);
-      });
-    }
-    
-    // Function to load playlists
-    function loadPlaylists() {
-      const playlistsContainer = document.getElementById('playlists-container');
-      
-      // In a real app, we would fetch this from Firebase
-      // For now, we'll use our mock data
-      setTimeout(() => {
-        playlistsContainer.innerHTML = '';
-        
-        defaultPlaylists.forEach(playlist => {
-          const li = document.createElement('li');
-          li.dataset.playlistId = playlist.id;
-          li.onclick = () => loadPlaylistView(playlist.id);
+        // Function to load songs to the home view
+        function loadSongs() {
+          const songsGrid = document.getElementById('songs-grid');
+          songsGrid.innerHTML = '';
           
-          li.innerHTML = `
-            <img src="images/${playlist.image}" alt="${playlist.name}" class="playlist-mini-img">
-            ${playlist.name}
-          `;
+          songs.forEach(song => {
+            const songCard = document.createElement('div');
+            songCard.className = 'song-card';
+            songCard.dataset.songId = song.id;
+            
+            if (song.id === 'song8') {
+              // BTS song should show the error dialog
+              songCard.onclick = showErrorDialog;
+            } else {
+              songCard.onclick = () => playSong(song.id);
+            }
+            
+            songCard.innerHTML = `
+              <div class="song-img-container">
+                <img src="images/${song.imageFile}" alt="${song.title}" class="song-img">
+              </div>
+              <div class="song-info-container">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+              </div>
+            `;
+            
+            songsGrid.appendChild(songCard);
+          });
+        }
+        
+        // Function to load playlists
+        async function loadPlaylists() {
+          const playlistsContainer = document.getElementById('playlists-container');
           
-          playlistsContainer.appendChild(li);
-        });
-      }, 500); // Simulate loading time
-    }
-    
-    // Function to setup navigation
-    function setupNavigation() {
-      // Home
-      document.getElementById('home-link').addEventListener('click', function() {
-        showView('home-view');
-      });
-      
-      // Search
-      document.getElementById('search-link').addEventListener('click', function() {
-        showView('search-view');
-      });
-      
-      // Recently Played
-      document.getElementById('recently-played-link').addEventListener('click', function() {
-        showView('recently-played-view');
-        loadRecentlyPlayed();
-      });
-      
-      // Liked Songs
-      document.getElementById('liked-songs-link').addEventListener('click', function() {
-        showView('liked-songs-view');
-        loadLikedSongs();
-      });
-    }
-    
-    // Function to show a specific view
-    function showView(viewId) {
-      // Hide all views
-      document.querySelectorAll('#main-content > div').forEach(view => {
-        view.style.display = 'none';
-      });
-      
-      // Show the selected view
-      document.getElementById(viewId).style.display = 'block';
-    }
-    
-    // Function to initialize search functionality
+          // Show loading indicator
+          playlistsContainer.innerHTML = '<div class="loader"></div>';
+          
+          try {
+            // Get user-created playlists from Supabase
+            const { data: userPlaylists, error } = await supabase
+              .from('playlists')
+              .select('*')
+              .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            
+            // Combine with default playlists
+            const allPlaylists = [...defaultPlaylists];
+            
+            // Add user playlists if any were returned
+            if (userPlaylists && userPlaylists.length > 0) {
+              allPlaylists.push(...userPlaylists);
+            }
+            
+            playlistsContainer.innerHTML = '';
+            
+            allPlaylists.forEach(playlist => {
+              const li = document.createElement('li');
+              li.dataset.playlistId = playlist.id;
+              li.onclick = () => loadPlaylistView(playlist.id);
+              
+              const imageUrl = playlist.is_user_created 
+                ? playlist.image_url // Use URL for user-created playlists
+                : `images/${playlist.image}`; // Use local path for default playlists
+              
+              li.innerHTML = `
+                <img src="${imageUrl}" alt="${playlist.name}" class="playlist-mini-img">
+                ${playlist.name}
+              `;
+              
+              playlistsContainer.appendChild(li);
+            });
+          } catch (error) {
+            console.error('Error loading playlists:', error);
+            
+            // Fallback to just loading default playlists
+            setTimeout(() => {
+              playlistsContainer.innerHTML = '';
+              
+              defaultPlaylists.forEach(playlist => {
+                const li = document.createElement('li');
+                li.dataset.playlistId = playlist.id;
+                li.onclick = () => loadPlaylistView(playlist.id);
+                
+                li.innerHTML = `
+                  <img src="images/${playlist.image}" alt="${playlist.name}" class="playlist-mini-img">
+                  ${playlist.name}
+                `;
+                
+                playlistsContainer.appendChild(li);
+              });
+            }, 500);
+          }
+        }
+        
+        // Function to setup navigation
+        function setupNavigation() {
+          // Home
+          document.getElementById('home-link').addEventListener('click', function() {
+            showView('home-view');
+          });
+          
+          // Search
+          document.getElementById('search-link').addEventListener('click', function() {
+            showView('search-view');
+          });
+          
+          // Recently Played
+          document.getElementById('recently-played-link').addEventListener('click', function() {
+            showView('recently-played-view');
+            loadRecentlyPlayed();
+          });
+          
+          // Liked Songs
+          document.getElementById('liked-songs-link').addEventListener('click', function() {
+            showView('liked-songs-view');
+            loadLikedSongs();
+          });
+        }
+        
+        // Function to show a specific view
+        function showView(viewId) {
+          // Hide all views
+          document.querySelectorAll('#main-content > div').forEach(view => {
+            view.style.display = 'none';
+          });
+          
+          // Show the selected view
+          document.getElementById(viewId).style.display = 'block';
+        }
+        // Function to initialize search functionality
     function initSearch() {
       const searchInput = document.getElementById('search-input');
       const clearSearch = document.getElementById('clear-search');
@@ -1663,30 +1771,62 @@
     }
     
     // Function to load a specific playlist view
-    function loadPlaylistView(playlistId) {
-      // Find the playlist
-      const playlist = defaultPlaylists.find(p => p.id === playlistId);
+    async function loadPlaylistView(playlistId) {
+      // Check if it's a default playlist
+      const defaultPlaylist = defaultPlaylists.find(p => p.id === playlistId);
       
-      if (!playlist) return;
-      
-      // Get the playlist's songs
-      const playlistSongs = playlist.songs.map(songId => 
-        songs.find(s => s.id === songId)
-      ).filter(Boolean);
-      
-      // Populate the playlist view
+      if (defaultPlaylist) {
+        // Handle default playlist
+        const playlistSongs = defaultPlaylist.songs.map(songId => 
+          songs.find(s => s.id === songId)
+        ).filter(Boolean);
+        
+        displayPlaylist(defaultPlaylist, playlistSongs);
+      } else {
+        // It's a user-created playlist, fetch from Supabase
+        try {
+          const { data: playlist, error } = await supabase
+            .from('playlists')
+            .select('*')
+            .eq('id', playlistId)
+            .single();
+          
+          if (error) throw error;
+          
+          // Get the songs
+          const playlistSongs = playlist.songs.map(songId => 
+            songs.find(s => s.id === songId)
+          ).filter(Boolean);
+          
+          displayPlaylist(playlist, playlistSongs);
+        } catch (error) {
+          console.error('Error loading playlist:', error);
+          alert('An error occurred while loading the playlist. Please try again.');
+        }
+      }
+    }
+    
+    // Helper function to display a playlist
+    function displayPlaylist(playlist, playlistSongs) {
       const playlistView = document.getElementById('playlist-view');
+      
+      const imageUrl = playlist.is_user_created 
+        ? playlist.image_url 
+        : `images/${playlist.image}`;
       
       playlistView.innerHTML = `
         <div class="playlist-header">
           <div class="playlist-cover">
-            <img src="images/${playlist.image}" alt="${playlist.name}">
+            <img src="${imageUrl}" alt="${playlist.name}">
           </div>
           <div class="playlist-info">
             <div class="playlist-type">Playlist</div>
             <h1 class="playlist-title">${playlist.name}</h1>
             <div class="playlist-description">${playlist.description}</div>
-            <div class="playlist-meta">${playlistSongs.length} songs</div>
+            <div class="playlist-meta">
+              ${playlistSongs.length} songs
+              ${playlist.is_user_created ? '• Created by a user' : ''}
+            </div>
           </div>
         </div>
         
@@ -1765,7 +1905,7 @@
       // Add to recently played
       addToRecentlyPlayed(songId);
     }
-    
+
     // Function to toggle play/pause
     function togglePlay() {
       if (!currentSong) return;
@@ -1921,7 +2061,7 @@
       const volumeIcon = document.getElementById('volume-icon');
       if (percent === 0) {
         volumeIcon.className = 'fas fa-volume-mute';
-    } else if (percent < 0.5) {
+      } else if (percent < 0.5) {
         volumeIcon.className = 'fas fa-volume-down';
       } else {
         volumeIcon.className = 'fas fa-volume-up';
@@ -1957,7 +2097,6 @@
       if (!currentSong) return;
       audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
     });
-    
     // Function to show North Korean error dialog
     function showErrorDialog() {
       const overlay = document.createElement('div');
@@ -2202,14 +2341,26 @@
         </table>
       `;
     }
-    
-    // Add playlist modal
+    // Function to show the add playlist modal
     function showAddPlaylistModal() {
       const overlay = document.createElement('div');
       overlay.className = 'modal-overlay';
       
       const content = document.createElement('div');
       content.className = 'modal-content';
+      
+      // Create song checkboxes for selection
+      const songCheckboxes = songs
+        .filter(song => song.id !== 'song8') // Filter out BTS song
+        .map(song => `
+          <div class="song-selection-item">
+            <input type="checkbox" id="song-${song.id}" value="${song.id}" class="song-checkbox">
+            <label for="song-${song.id}">
+              <img src="images/${song.imageFile}" alt="${song.title}" class="song-selection-img">
+              <span>${song.title}</span>
+            </label>
+          </div>
+        `).join('');
       
       content.innerHTML = `
         <div class="modal-header">
@@ -2219,7 +2370,7 @@
         <div class="modal-form">
           <div class="modal-form-group">
             <label for="playlist-name">Playlist Name</label>
-            <input type="text" id="playlist-name" placeholder="My Great Playlist">
+            <input type="text" id="playlist-name" placeholder="My Kim Playlist">
           </div>
           
           <div class="modal-form-group">
@@ -2229,12 +2380,16 @@
           
           <div class="modal-form-group">
             <label>Cover Image</label>
-            <div class="image-selector" id="image-selector">
-              ${songs.map(song => `
-                <div class="image-option" data-image="${song.imageFile}">
-                  <img src="images/${song.imageFile}" alt="Cover Option">
-                </div>
-              `).join('')}
+            <input type="file" id="cover-upload" accept="image/*">
+            <div class="image-preview" id="cover-preview">
+              <span>No image selected</span>
+            </div>
+          </div>
+          
+          <div class="modal-form-group">
+            <label>Select Songs (At least one)</label>
+            <div class="song-selection">
+              ${songCheckboxes}
             </div>
           </div>
         </div>
@@ -2248,27 +2403,24 @@
       overlay.appendChild(content);
       document.body.appendChild(overlay);
       
-      // Setup image selector
-      const imageOptions = content.querySelectorAll('.image-option');
-      let selectedImage = null;
+      // Setup image uploader and preview
+      const fileInput = content.querySelector('#cover-upload');
+      const imagePreview = content.querySelector('#cover-preview');
+      let uploadedImage = null;
       
-      imageOptions.forEach(option => {
-        option.addEventListener('click', function() {
-          // Remove selected class from all options
-          imageOptions.forEach(opt => opt.classList.remove('selected'));
+      fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          uploadedImage = file;
           
-          // Add selected class to clicked option
-          this.classList.add('selected');
-          
-          // Store selected image
-          selectedImage = this.dataset.image;
-        });
+          // Preview the image
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded cover">`;
+          };
+          reader.readAsDataURL(file);
+        }
       });
-      
-      // Select first image by default
-      if (imageOptions.length > 0) {
-        imageOptions[0].click();
-      }
       
       // Cancel button
       content.querySelector('#cancel-playlist').addEventListener('click', function() {
@@ -2276,41 +2428,88 @@
       });
       
       // Create button
-      content.querySelector('#create-playlist').addEventListener('click', function() {
+      content.querySelector('#create-playlist').addEventListener('click', async function() {
         const name = content.querySelector('#playlist-name').value.trim();
         const description = content.querySelector('#playlist-description').value.trim();
         
+        // Validation
         if (!name) {
           alert('Please enter a playlist name');
           return;
         }
         
-        if (!selectedImage) {
-          alert('Please select a cover image');
+        if (!uploadedImage) {
+          alert('Please upload a cover image');
           return;
         }
         
-        // Generate a unique ID
-        const playlistId = 'playlist-' + Date.now();
+        // Get selected songs
+        const selectedSongs = Array.from(content.querySelectorAll('.song-checkbox:checked'))
+          .map(checkbox => checkbox.value);
         
-        // Create the playlist object
-        const newPlaylist = {
-          id: playlistId,
-          name: name,
-          description: description || 'No description',
-          image: selectedImage,
-          songs: []
-        };
+        if (selectedSongs.length === 0) {
+          alert('Please select at least one song');
+          return;
+        }
         
-        // In a real app, we would save this to Firebase
-        // For now, we'll add it to our local array
-        defaultPlaylists.unshift(newPlaylist);
+        // Show loading state
+        const createBtn = content.querySelector('#create-playlist');
+        const originalBtnText = createBtn.textContent;
+        createBtn.textContent = 'Creating...';
+        createBtn.disabled = true;
         
-        // Reload playlists
-        loadPlaylists();
-        
-        // Close the modal
-        document.body.removeChild(overlay);
+        try {
+          // 1. Upload the image to Supabase Storage
+          const filename = `playlist-cover-${Date.now()}-${uploadedImage.name}`;
+          
+          const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('playlist-covers')
+            .upload(filename, uploadedImage);
+          
+          if (uploadError) throw uploadError;
+          
+          // 2. Get the public URL for the uploaded image
+          const { data: { publicUrl } } = supabase
+            .storage
+            .from('playlist-covers')
+            .getPublicUrl(filename);
+          
+          // 3. Create a new playlist record
+          const playlistData = {
+            name: name,
+            description: description || 'No description',
+            image_url: publicUrl,
+            songs: selectedSongs,
+            is_user_created: true,
+            created_at: new Date().toISOString()
+          };
+          
+          const { data: playlist, error: insertError } = await supabase
+            .from('playlists')
+            .insert(playlistData)
+            .select()
+            .single();
+          
+          if (insertError) throw insertError;
+          
+          // 4. Reload playlists
+          await loadPlaylists();
+          
+          // 5. Close the modal
+          document.body.removeChild(overlay);
+          
+          // 6. Show the new playlist
+          loadPlaylistView(playlist.id);
+          
+        } catch (error) {
+          console.error('Error creating playlist:', error);
+          alert('An error occurred while creating the playlist. Please try again.');
+          
+          // Reset button state
+          createBtn.textContent = originalBtnText;
+          createBtn.disabled = false;
+        }
       });
     }
   </script>
