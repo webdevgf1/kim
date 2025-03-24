@@ -1431,15 +1431,68 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-    .meme-subtitle {
+    .meme-modal-content {
+    width: 90%;
+    max-width: 1100px;
+    max-height: 90vh;
+    background-color: #282828;
+    border-radius: 8px;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .meme-modal-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .meme-modal-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Comfortaa', cursive;
+    color: white;
+    margin: 0;
+  }
+  
+  .meme-close-btn {
+    background: none;
+    border: none;
     color: #b3b3b3;
-    margin-top: 4px;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .meme-close-btn:hover {
+    color: white;
+  }
+  
+  .meme-modal-body {
+    padding: 24px;
   }
   
   .meme-container {
     display: flex;
-    margin-top: 24px;
-    gap: 32px;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  @media (max-width: 900px) {
+    .meme-container {
+      flex-direction: column;
+    }
+    
+    .meme-preview {
+      width: 100% !important;
+    }
   }
   
   .meme-editor {
@@ -1447,22 +1500,23 @@
   }
   
   .editor-section {
-    background-color: #282828;
+    background-color: #1e1e1e;
     border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 24px;
+    padding: 16px;
+    margin-bottom: 16px;
   }
   
   .editor-section h3 {
-    margin-bottom: 16px;
-    font-size: 18px;
+    margin-bottom: 12px;
+    font-size: 16px;
     font-weight: bold;
+    font-family: 'Comfortaa', cursive;
   }
   
   .template-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
   
   .template-item {
@@ -1492,7 +1546,7 @@
   .caption-inputs {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
   
   .input-group {
@@ -1502,17 +1556,17 @@
   
   .input-group label {
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: #b3b3b3;
   }
   
   .input-group input {
-    padding: 12px 16px;
+    padding: 10px 14px;
     background-color: #333;
     border: none;
     border-radius: 4px;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .input-group input:focus {
@@ -1523,13 +1577,13 @@
   .style-options {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
   
   .option-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
   
   .option-group label {
@@ -1543,8 +1597,8 @@
   }
   
   .color-btn {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     border: 2px solid #444;
     cursor: pointer;
@@ -1560,64 +1614,24 @@
   }
   
   .stroke-btn, .bg-btn {
-    padding: 8px 12px;
+    padding: 6px 10px;
     background-color: #333;
     border: 2px solid #444;
     border-radius: 4px;
     color: white;
+    font-size: 12px;
     cursor: pointer;
     transition: transform 0.2s, border-color 0.2s;
   }
   
-  .action-buttons {
-    display: flex;
-    gap: 16px;
-    margin-top: 24px;
-  }
-  
-  .action-btn {
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.2s, transform 0.2s;
-  }
-  
-  .action-btn:hover {
-    transform: translateY(-2px);
-  }
-  
-  .generate-btn {
-    background-color: #1DB954;
-    color: white;
-    flex: 1;
-  }
-  
-  .generate-btn:hover {
-    background-color: #1ed760;
-  }
-  
-  .reset-btn {
-    background-color: #444;
-    color: white;
-  }
-  
-  .reset-btn:hover {
-    background-color: #555;
-  }
-  
   .meme-preview {
-    width: 500px;
-    display: flex;
-    flex-direction: column;
+    width: 400px;
   }
   
   .preview-container {
-    background-color: #282828;
+    background-color: #1e1e1e;
     border-radius: 8px;
-    padding: 24px;
+    padding: 16px;
     margin-bottom: 16px;
     display: flex;
     flex-direction: column;
@@ -1648,23 +1662,42 @@
   }
   
   .preview-actions {
-    display: flex;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
     margin-bottom: 16px;
   }
   
-  .download-btn, .share-btn {
-    flex: 1;
-    text-align: center;
+  .action-btn {
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s, transform 0.2s;
   }
   
-  .download-btn {
+  .action-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  
+  .generate-btn {
     background-color: #1DB954;
     color: white;
   }
   
-  .download-btn:hover {
+  .generate-btn:hover {
     background-color: #1ed760;
+  }
+  
+  .download-btn {
+    background-color: #7e57c2;
+    color: white;
+  }
+  
+  .download-btn:hover:not(:disabled) {
+    background-color: #9575cd;
   }
   
   .share-btn {
@@ -1672,7 +1705,7 @@
     color: white;
   }
   
-  .share-btn:hover {
+  .share-btn:hover:not(:disabled) {
     background-color: #0069d9;
   }
   
@@ -1694,37 +1727,51 @@
   }
   
   .recent-memes {
-    margin-top: 32px;
+    margin-top: 24px;
   }
   
   .recent-memes h3 {
-    margin-bottom: 16px;
-    font-size: 18px;
+    margin-bottom: 12px;
+    font-size: 16px;
     font-weight: bold;
+    font-family: 'Comfortaa', cursive;
   }
   
   .recent-memes-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 12px;
+  }
+  
+  @media (max-width: 768px) {
+    .recent-memes-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .recent-memes-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
   
   .empty-memes-message {
     grid-column: 1 / -1;
     text-align: center;
     color: #b3b3b3;
-    padding: 32px;
-    background-color: #282828;
+    padding: 24px;
+    background-color: #1e1e1e;
     border-radius: 8px;
   }
   
   .recent-meme-item {
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
     aspect-ratio: 1;
     position: relative;
     cursor: pointer;
     transition: transform 0.2s;
+    background-color: #333;
   }
   
   .recent-meme-item:hover {
@@ -1861,110 +1908,6 @@
             <!-- Playlist view will be populated dynamically -->
           </div>
         </div>
-
-        <div id="meme-view" style="display: none;">
-            <div class="header">
-              <h1>Approved Propaganda Meme Generator</h1>
-              <p class="meme-subtitle">Create officially sanctioned image messages that glorify our Supreme Leader's musical talents</p>
-            </div>
-            
-            <div class="meme-container">
-              <div class="meme-editor">
-                <div class="editor-section">
-                  <h3>1. Select Template</h3>
-                  <div class="template-grid">
-                    <div class="template-item" data-template="template1">
-                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader">
-                    </div>
-                    <div class="template-item" data-template="template2">
-                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader with Headphones">
-                    </div>
-                    <div class="template-item" data-template="template3">
-                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader at Concert">
-                    </div>
-                    <div class="template-item" data-template="template4">
-                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Disapproving Supreme Leader">
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="editor-section">
-                  <h3>2. Add Captions</h3>
-                  <div class="caption-inputs">
-                    <div class="input-group">
-                      <label for="top-text">Top Text</label>
-                      <input type="text" id="top-text" placeholder="WHEN THEY SAY BTS IS BETTER" maxlength="50">
-                    </div>
-                    <div class="input-group">
-                      <label for="bottom-text">Bottom Text</label>
-                      <input type="text" id="bottom-text" placeholder="THAN MY REVOLUTIONARY MIXTAPE" maxlength="50">
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="editor-section">
-                  <h3>3. Customize Style</h3>
-                  <div class="style-options">
-                    <div class="option-group">
-                      <label for="text-color">Text Color</label>
-                      <div class="color-buttons">
-                        <button class="color-btn" data-color="#ffffff" style="background-color: #ffffff;"></button>
-                        <button class="color-btn" data-color="#ff0000" style="background-color: #ff0000;"></button>
-                        <button class="color-btn" data-color="#ffff00" style="background-color: #ffff00;"></button>
-                        <button class="color-btn" data-color="#00ff00" style="background-color: #00ff00;"></button>
-                      </div>
-                    </div>
-                    <div class="option-group">
-                      <label for="text-stroke">Text Outline</label>
-                      <div class="stroke-buttons">
-                        <button class="stroke-btn" data-stroke="none">None</button>
-                        <button class="stroke-btn" data-stroke="thin">Thin</button>
-                        <button class="stroke-btn" data-stroke="thick">Thick</button>
-                      </div>
-                    </div>
-                    <div class="option-group">
-                      <label for="background">Background</label>
-                      <div class="background-buttons">
-                        <button class="bg-btn" data-bg="none">None</button>
-                        <button class="bg-btn" data-bg="red">Red</button>
-                        <button class="bg-btn" data-bg="stars">Stars</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="action-buttons">
-                  <button id="generate-meme" class="action-btn generate-btn">Generate Meme</button>
-                  <button id="reset-meme" class="action-btn reset-btn">Reset</button>
-                </div>
-              </div>
-              
-              <div class="meme-preview">
-                <div class="preview-container">
-                  <div class="meme-canvas-container">
-                    <canvas id="meme-canvas" width="500" height="500"></canvas>
-                  </div>
-                  <div class="preview-message">Your meme will appear here</div>
-                </div>
-                <div class="preview-actions">
-                  <button id="download-meme" class="action-btn download-btn" disabled>Download Meme</button>
-                  <button id="share-meme" class="action-btn share-btn" disabled>Share with Comrades</button>
-                </div>
-                <div class="approval-notice">
-                  <i class="fas fa-shield-alt"></i>
-                  <span>This meme has been pre-approved by the Ministry of Acceptable Internet Content</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="recent-memes">
-              <h3>Recently Created Propaganda</h3>
-              <div class="recent-memes-grid" id="recent-memes-container">
-                <!-- Recently created memes will appear here -->
-                <div class="empty-memes-message">Your creations will appear here</div>
-              </div>
-            </div>
-          </div>
         
         <!-- New Kimify Wrapped Modal -->
         <div id="wrapped-modal" class="modal-overlay" style="display: none;">
@@ -2231,34 +2174,44 @@
         const RECENTLY_PLAYED_KEY = 'kimify-recently-played';
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-  // Existing initialization code
-  loadSongs();
-  setupNavigation();
-  initSearch();
-  loadPlaylists();
-  document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
-  setVolumePercent(audioPlayer.volume);
-  document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
-  addNewStyles();
-  
-  // Add new feature initializations
-  addMapNavLink();
-  addMemeNavLink();
-  
-  // Setup share button in the wrapped modal
-  const setupShareButton = function() {
-    const shareButton = document.querySelector('.share-btn');
-    if (shareButton) {
-      shareButton.addEventListener('click', showErrorDialog);
-    }
-  };
-  
-  // Try to set up immediately
-  setupShareButton();
-  
-  // Also try after a short delay in case the DOM isn't fully loaded
-  setTimeout(setupShareButton, 1000);
-});
+          // Load songs to the home view
+          loadSongs();
+          
+          // Setup navigation
+          setupNavigation();
+          
+          // Initialize search functionality
+          initSearch();
+          
+          // Load playlists
+          loadPlaylists();
+          
+          // Setup like button functionality
+          document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
+          
+          // Initialize volume display
+          setVolumePercent(audioPlayer.volume);
+          
+          // Setup add playlist button
+          document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
+    
+          // Add styles for song selection and image preview
+          addNewStyles();
+          
+          // Setup share button in the wrapped modal
+          const setupShareButton = function() {
+            const shareButton = document.querySelector('.share-btn');
+            if (shareButton) {
+              shareButton.addEventListener('click', showErrorDialog);
+            }
+          };
+          
+          // Try to set up immediately
+          setupShareButton();
+          
+          // Also try after a short delay in case the DOM isn't fully loaded
+          setTimeout(setupShareButton, 1000);
+        });
         
         // Function to add styles for Supabase implementation
         function addNewStyles() {
@@ -3344,11 +3297,41 @@
           });
         }
 
+        // Function to animate the stats when viewing the wrapped
+        function animateWrappedStats() {
+          const statNumbers = document.querySelectorAll('.stat-number');
+          
+          statNumbers.forEach(statElement => {
+            const targetValue = parseInt(statElement.textContent);
+            
+            // Reset to zero
+            statElement.textContent = '0';
+            
+            // Animate to target value
+            let currentValue = 0;
+            const duration = 2000; // 2 seconds
+            const interval = 16; // ~60fps
+            const steps = duration / interval;
+            const increment = targetValue / steps;
+            
+            const counter = setInterval(() => {
+              currentValue += increment;
+              
+              if (currentValue >= targetValue) {
+                statElement.textContent = targetValue;
+                clearInterval(counter);
+              } else {
+                statElement.textContent = Math.floor(currentValue);
+              }
+            }, interval);
+          });
+        }
+
         function addMemeNavLink() {
   const nav = document.querySelector('nav');
   const mapLink = document.getElementById('map-link');
   
-  // Create meme generator link element after map link
+  // Create meme generator link element
   const memeLink = document.createElement('a');
   memeLink.href = "#";
   memeLink.className = "nav-link";
@@ -3368,9 +3351,19 @@
   
   // Add event listener for meme link
   memeLink.addEventListener('click', function() {
-    showView('meme-view');
-    initMemeGenerator();
+    showMemeModal();
   });
+}
+
+// Function to show the meme generator modal
+function showMemeModal() {
+  document.getElementById('meme-modal').style.display = 'flex';
+  initMemeGenerator();
+}
+
+// Function to close the meme generator modal
+function closeMemeModal() {
+  document.getElementById('meme-modal').style.display = 'none';
 }
 
 // Meme generator initialization
@@ -3383,11 +3376,14 @@ function initMemeGenerator() {
   const strokeButtons = document.querySelectorAll('.stroke-btn');
   const bgButtons = document.querySelectorAll('.bg-btn');
   const generateBtn = document.getElementById('generate-meme');
-  const resetBtn = document.getElementById('reset-meme');
   const downloadBtn = document.getElementById('download-meme');
   const shareBtn = document.getElementById('share-meme');
   const memeCanvas = document.getElementById('meme-canvas');
   const previewMessage = document.querySelector('.preview-message');
+  
+  // Skip if already initialized
+  if (window.memeGeneratorInitialized) return;
+  window.memeGeneratorInitialized = true;
   
   let selectedTemplate = null;
   let selectedColor = '#ffffff';
@@ -3445,11 +3441,6 @@ function initMemeGenerator() {
     generateMeme();
   });
   
-  // Reset button
-  resetBtn.addEventListener('click', function() {
-    resetMemeGenerator();
-  });
-  
   // Download button
   downloadBtn.addEventListener('click', function() {
     downloadMeme();
@@ -3476,7 +3467,7 @@ function initMemeGenerator() {
       } else if (selectedBg === 'red') {
         ctx.fillStyle = '#c00000';
         ctx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
-        ctx.drawImage(img, 50, 50, memeCanvas.width - 100, memeCanvas.height - 100);
+        ctx.drawImage(img, 40, 40, memeCanvas.width - 80, memeCanvas.height - 80);
       } else if (selectedBg === 'stars') {
         // Draw stars background
         ctx.fillStyle = '#00205b';
@@ -3493,7 +3484,7 @@ function initMemeGenerator() {
           ctx.fill();
         }
         
-        ctx.drawImage(img, 50, 50, memeCanvas.width - 100, memeCanvas.height - 100);
+        ctx.drawImage(img, 40, 40, memeCanvas.width - 80, memeCanvas.height - 80);
       }
       
       // Set font style
@@ -3504,29 +3495,29 @@ function initMemeGenerator() {
       const topText = topTextInput.value.toUpperCase() || 'ADD TOP TEXT';
       const bottomText = bottomTextInput.value.toUpperCase() || 'ADD BOTTOM TEXT';
       
-      const fontSize = Math.min(60, 500 / Math.max(topText.length, bottomText.length) * 5);
-      ctx.font = `bold ${fontSize}px Arial`;
+      const fontSize = Math.min(50, 400 / Math.max(topText.length, bottomText.length) * 5);
+      ctx.font = `bold ${fontSize}px Impact, Arial, sans-serif`;
       
       // Set text color
       ctx.fillStyle = selectedColor;
       
       // Add text stroke based on selection
       if (selectedStroke !== 'none') {
-        ctx.lineWidth = selectedStroke === 'thin' ? 2 : 5;
+        ctx.lineWidth = selectedStroke === 'thin' ? 2 : 4;
         ctx.strokeStyle = 'black';
       }
       
       // Draw top text
       if (selectedStroke !== 'none') {
-        ctx.strokeText(topText, memeCanvas.width / 2, 20, memeCanvas.width - 20);
+        ctx.strokeText(topText, memeCanvas.width / 2, 15, memeCanvas.width - 15);
       }
-      ctx.fillText(topText, memeCanvas.width / 2, 20, memeCanvas.width - 20);
+      ctx.fillText(topText, memeCanvas.width / 2, 15, memeCanvas.width - 15);
       
       // Draw bottom text
       if (selectedStroke !== 'none') {
-        ctx.strokeText(bottomText, memeCanvas.width / 2, memeCanvas.height - fontSize - 20, memeCanvas.width - 20);
+        ctx.strokeText(bottomText, memeCanvas.width / 2, memeCanvas.height - fontSize - 15, memeCanvas.width - 15);
       }
-      ctx.fillText(bottomText, memeCanvas.width / 2, memeCanvas.height - fontSize - 20, memeCanvas.width - 20);
+      ctx.fillText(bottomText, memeCanvas.width / 2, memeCanvas.height - fontSize - 15, memeCanvas.width - 15);
       
       // Show canvas and hide message
       memeCanvas.style.display = 'block';
@@ -3543,38 +3534,6 @@ function initMemeGenerator() {
     // Set image source based on template selection
     // In a real implementation, you would have different image URLs for each template
     img.src = document.querySelector(`.template-item[data-template="${selectedTemplate}"] img`).src;
-  }
-  
-  // Function to reset the meme generator
-  function resetMemeGenerator() {
-    // Reset selections
-    templateItems.forEach(item => item.classList.remove('selected'));
-    selectedTemplate = null;
-    
-    // Reset inputs
-    topTextInput.value = '';
-    bottomTextInput.value = '';
-    
-    // Reset color, stroke and background to defaults
-    colorButtons.forEach(btn => btn.classList.remove('selected'));
-    strokeButtons.forEach(btn => btn.classList.remove('selected'));
-    bgButtons.forEach(btn => btn.classList.remove('selected'));
-    
-    colorButtons[0].classList.add('selected');
-    strokeButtons[1].classList.add('selected');
-    bgButtons[0].classList.add('selected');
-    
-    selectedColor = '#ffffff';
-    selectedStroke = 'thin';
-    selectedBg = 'none';
-    
-    // Hide canvas and show message
-    memeCanvas.style.display = 'none';
-    previewMessage.style.display = 'block';
-    
-    // Disable download and share buttons
-    downloadBtn.disabled = true;
-    shareBtn.disabled = true;
   }
   
   // Function to download the meme
@@ -3604,9 +3563,21 @@ function initMemeGenerator() {
     img.src = memeCanvas.toDataURL('image/png');
     memeItem.appendChild(img);
     
-    // Add click event to reopen the meme
+    // Add click event to show the meme in the canvas
     memeItem.addEventListener('click', function() {
-      // In a real implementation, you would save metadata to reopen the meme with the same settings
+      const tempImg = new Image();
+      tempImg.src = img.src;
+      tempImg.onload = function() {
+        const ctx = memeCanvas.getContext('2d');
+        ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
+        ctx.drawImage(tempImg, 0, 0, memeCanvas.width, memeCanvas.height);
+        
+        memeCanvas.style.display = 'block';
+        previewMessage.style.display = 'none';
+        
+        downloadBtn.disabled = false;
+        shareBtn.disabled = false;
+      };
     });
     
     // Add to container (at the beginning)
@@ -3617,45 +3588,130 @@ function initMemeGenerator() {
     }
     
     // Limit to 8 recent memes
-    if (recentMemesContainer.children.length > 8) {
-      recentMemesContainer.removeChild(recentMemesContainer.lastChild);
+    const items = recentMemesContainer.querySelectorAll('.recent-meme-item');
+    if (items.length > 8) {
+      recentMemesContainer.removeChild(items[items.length - 1]);
     }
   }
 }
 
+// Add initialization function for meme generator
 document.addEventListener('DOMContentLoaded', function() {
   addMemeNavLink();
+  
+  // Add meme modal to the DOM
+  if (!document.getElementById('meme-modal')) {
+    const memeModal = document.createElement('div');
+    memeModal.id = 'meme-modal';
+    memeModal.className = 'modal-overlay';
+    memeModal.style.display = 'none';
+    memeModal.innerHTML = document.querySelector('#meme-modal-template').innerHTML;
+    document.body.appendChild(memeModal);
+  }
 });
-
-        // Function to animate the stats when viewing the wrapped
-        function animateWrappedStats() {
-          const statNumbers = document.querySelectorAll('.stat-number');
-          
-          statNumbers.forEach(statElement => {
-            const targetValue = parseInt(statElement.textContent);
-            
-            // Reset to zero
-            statElement.textContent = '0';
-            
-            // Animate to target value
-            let currentValue = 0;
-            const duration = 2000; // 2 seconds
-            const interval = 16; // ~60fps
-            const steps = duration / interval;
-            const increment = targetValue / steps;
-            
-            const counter = setInterval(() => {
-              currentValue += increment;
-              
-              if (currentValue >= targetValue) {
-                statElement.textContent = targetValue;
-                clearInterval(counter);
-              } else {
-                statElement.textContent = Math.floor(currentValue);
-              }
-            }, interval);
-          });
-        }
     </script>
+    <div id="meme-modal" class="modal-overlay" style="display: none;">
+        <div class="meme-modal-content">
+          <div class="meme-modal-header">
+            <h2>Propaganda Meme Generator</h2>
+            <button class="meme-close-btn" onclick="closeMemeModal()">×</button>
+          </div>
+          
+          <div class="meme-modal-body">
+            <div class="meme-container">
+              <div class="meme-editor">
+                <div class="editor-section">
+                  <h3>1. Select Template</h3>
+                  <div class="template-grid">
+                    <div class="template-item" data-template="template1">
+                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader">
+                    </div>
+                    <div class="template-item" data-template="template2">
+                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader with Headphones">
+                    </div>
+                    <div class="template-item" data-template="template3">
+                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Supreme Leader at Concert">
+                    </div>
+                    <div class="template-item" data-template="template4">
+                      <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" alt="Disapproving Supreme Leader">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="editor-section">
+                  <h3>2. Add Captions</h3>
+                  <div class="caption-inputs">
+                    <div class="input-group">
+                      <label for="top-text">Top Text</label>
+                      <input type="text" id="top-text" placeholder="WHEN THEY SAY BTS IS BETTER" maxlength="50">
+                    </div>
+                    <div class="input-group">
+                      <label for="bottom-text">Bottom Text</label>
+                      <input type="text" id="bottom-text" placeholder="THAN MY REVOLUTIONARY MIXTAPE" maxlength="50">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="editor-section">
+                  <h3>3. Customize Style</h3>
+                  <div class="style-options">
+                    <div class="option-group">
+                      <label for="text-color">Text Color</label>
+                      <div class="color-buttons">
+                        <button class="color-btn" data-color="#ffffff" style="background-color: #ffffff;"></button>
+                        <button class="color-btn" data-color="#ff0000" style="background-color: #ff0000;"></button>
+                        <button class="color-btn" data-color="#ffff00" style="background-color: #ffff00;"></button>
+                        <button class="color-btn" data-color="#00ff00" style="background-color: #00ff00;"></button>
+                      </div>
+                    </div>
+                    <div class="option-group">
+                      <label for="text-stroke">Text Outline</label>
+                      <div class="stroke-buttons">
+                        <button class="stroke-btn" data-stroke="none">None</button>
+                        <button class="stroke-btn" data-stroke="thin">Thin</button>
+                        <button class="stroke-btn" data-stroke="thick">Thick</button>
+                      </div>
+                    </div>
+                    <div class="option-group">
+                      <label for="background">Background</label>
+                      <div class="background-buttons">
+                        <button class="bg-btn" data-bg="none">None</button>
+                        <button class="bg-btn" data-bg="red">Red</button>
+                        <button class="bg-btn" data-bg="stars">Stars</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="meme-preview">
+                <div class="preview-container">
+                  <div class="meme-canvas-container">
+                    <canvas id="meme-canvas" width="400" height="400"></canvas>
+                  </div>
+                  <div class="preview-message">Your meme will appear here</div>
+                </div>
+                <div class="preview-actions">
+                  <button id="generate-meme" class="action-btn generate-btn">Generate Meme</button>
+                  <button id="download-meme" class="action-btn download-btn" disabled>Download</button>
+                  <button id="share-meme" class="action-btn share-btn" disabled>Share</button>
+                </div>
+                <div class="approval-notice">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Pre-approved by Ministry of Acceptable Internet Content</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="recent-memes">
+              <h3>Recently Created Propaganda</h3>
+              <div class="recent-memes-grid" id="recent-memes-container">
+                <!-- Recently created memes will appear here -->
+                <div class="empty-memes-message">Your creations will appear here</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 </body>
 </html>
