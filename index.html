@@ -1204,15 +1204,17 @@
       }
     }
     /* Kimify Wrapped Styles */
-  .wrapped-container {
-    background: linear-gradient(135deg, #c00000 0%, #8b0000 100%);
-    border-radius: 12px;
-    padding: 32px;
-    color: white;
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-  }
+    .wrapped-container {
+  background: linear-gradient(135deg, #c00000 0%, #8b0000 100%);
+  border-radius: 12px;
+  padding: 32px;
+  color: white;
+  margin: 0 auto;  /* Add this line to center the container */
+  max-width: 1200px; /* Add this line to limit the width */
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
   
   .wrapped-container::before {
     content: '';
@@ -1521,7 +1523,6 @@
       </div>
       <div id="wrapped-view" style="display: none;">
         <div class="header">
-          <h1>Kimify Wrapped</h1>
         </div>
         
         <div class="wrapped-container">
