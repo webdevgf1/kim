@@ -1203,14 +1203,13 @@
         width: 200px;
       }
     }
-    /* Kimify Wrapped Styles */
+
     .wrapped-container {
   background: linear-gradient(135deg, #c00000 0%, #8b0000 100%);
   border-radius: 12px;
   padding: 32px;
   color: white;
-  margin: 0 auto;  /* Add this line to center the container */
-  max-width: 1200px; /* Add this line to limit the width */
+  width: 100%; /* Make it full width */
   margin-bottom: 40px;
   position: relative;
   overflow: hidden;
@@ -1395,6 +1394,27 @@
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
   }
+  .wrapped-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.back-to-home {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-to-home:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
   </style>
   <!-- Adding Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -1522,7 +1542,11 @@
         </div>
       </div>
       <div id="wrapped-view" style="display: none;">
-        <div class="header">
+        <div class="wrapped-header">
+          <h1>Kimify Wrapped</h1>
+          <button class="back-to-home" onclick="showView('home-view')">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </button>
         </div>
         
         <div class="wrapped-container">
