@@ -2026,6 +2026,71 @@
   .pulse {
     animation: pulse 2s infinite;
   }
+
+  .nk-map-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .nk-map-image {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+  }
+  
+  .city-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #c00000;
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    z-index: 2;
+  }
+  
+  .city-marker:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Adjust marker sizes based on listener count */
+  .city-marker[data-listeners="1245"] {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .city-marker[data-listeners="367"],
+  .city-marker[data-listeners="301"] {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Pulsing animation for city markers */
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .pulse {
+    animation: pulse 2s infinite;
+  }
   </style>
   <!-- Adding Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -3878,84 +3943,77 @@ function addMapNavLink() {
   let cityElements;
   
   function initializeMap() {
-    // Clear previous interval if exists
-    if (updateInterval) {
-      clearInterval(updateInterval);
-    }
-    
-    // Get all city elements
-    cityElements = document.querySelectorAll('.city');
-    
-    // Add event listeners to cities
-    cityElements.forEach(city => {
-      city.addEventListener('mouseenter', showTooltip);
-      city.addEventListener('mouseleave', hideTooltip);
-    });
-    
-    // Add pulse animation to random cities
-    addRandomPulse();
-    
-    // Start updates for live listeners count
-    updateListenerCount();
-    
-    // Add live updates to the feed
-    startLiveUpdates();
+  // Clear previous interval if exists
+  if (updateInterval) {
+    clearInterval(updateInterval);
   }
   
-  function stopMapUpdates() {
-    if (updateInterval) {
-      clearInterval(updateInterval);
-      updateInterval = null;
-    }
-  }
+  // Get all city markers
+  cityElements = document.querySelectorAll('.city-marker');
   
-  function showTooltip(e) {
-    const city = e.target;
-    const tooltip = document.getElementById('map-tooltip');
-    
-    // Get city data
-    const cityName = city.getAttribute('data-city');
-    const listeners = city.getAttribute('data-listeners');
-    
-    // Update tooltip content
-    tooltip.querySelector('.tooltip-city').textContent = cityName;
-    tooltip.querySelector('.tooltip-listeners').textContent = `${listeners} listeners`;
-    
-    // Get position
-    const rect = city.getBoundingClientRect();
-    const mapContainer = document.getElementById('north-korea-map-container');
-    const mapRect = mapContainer.getBoundingClientRect();
-    
-    // Position tooltip above the city
-    tooltip.style.left = `${rect.left - mapRect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
-    tooltip.style.top = `${rect.top - mapRect.top - tooltip.offsetHeight - 10}px`;
-    
-    // Show tooltip
-    tooltip.style.display = 'block';
-  }
+  // Add event listeners to cities
+  cityElements.forEach(city => {
+    city.addEventListener('mouseenter', showTooltip);
+    city.addEventListener('mouseleave', hideTooltip);
+  });
+  
+  // Add pulse animation to random cities
+  addRandomPulse();
+  
+  // Start updates for live listeners count
+  updateListenerCount();
+  
+  // Add live updates to the feed
+  startLiveUpdates();
+}
+  
+function showTooltip(e) {
+  const city = e.target;
+  const tooltip = document.getElementById('map-tooltip');
+  
+  // Get city data
+  const cityName = city.getAttribute('data-city');
+  const listeners = city.getAttribute('data-listeners');
+  
+  // Update tooltip content
+  tooltip.querySelector('.tooltip-city').textContent = cityName;
+  tooltip.querySelector('.tooltip-listeners').textContent = `${listeners} listeners`;
+  
+  // Get position
+  const rect = city.getBoundingClientRect();
+  const mapContainer = document.getElementById('north-korea-map-container');
+  const mapRect = mapContainer.getBoundingClientRect();
+  
+  // Position tooltip above the city
+  tooltip.style.left = `${rect.left - mapRect.left + rect.width / 2}px`;
+  tooltip.style.top = `${rect.top - mapRect.top - tooltip.offsetHeight - 10}px`;
+  
+  // Show tooltip
+  tooltip.style.display = 'block';
+}
   
   function hideTooltip() {
     document.getElementById('map-tooltip').style.display = 'none';
   }
   
   function addRandomPulse() {
-    // Remove existing pulse animations
-    cityElements.forEach(city => {
-      city.classList.remove('pulse');
-    });
-    
-    // Add pulse to 1-3 random cities
-    const numPulses = Math.floor(Math.random() * 3) + 1;
-    const cities = Array.from(cityElements);
-    
-    for (let i = 0; i < numPulses; i++) {
-      if (cities.length > 0) {
-        const randomIndex = Math.floor(Math.random() * cities.length);
-        cities[randomIndex].classList.add('pulse');
-        cities.splice(randomIndex, 1);
-      }
+  // Remove existing pulse animations
+  cityElements.forEach(city => {
+    city.classList.remove('pulse');
+  });
+  
+  // Add pulse to 1-3 random cities
+  const numPulses = Math.floor(Math.random() * 3) + 1;
+  const cities = Array.from(cityElements);
+  
+  for (let i = 0; i < numPulses; i++) {
+    if (cities.length > 0) {
+      const randomIndex = Math.floor(Math.random() * cities.length);
+      cities[randomIndex].classList.add('pulse');
+      cities.splice(randomIndex, 1);
     }
   }
+}
   
   function updateListenerCount() {
     let totalListeners = 0;
@@ -4220,50 +4278,21 @@ function addMapNavLink() {
             <div class="map-container">
               <div class="map-overlay-text">Democratic People's Republic of Korea</div>
               <div id="north-korea-map-container">
-                <!-- SVG Map will go here -->
-                <svg width="100%" height="100%" viewBox="0 0 800 600" id="nk-map-svg">
-                  <!-- Base map of North Korea with more accurate geography -->
-                  <path d="M400,100 C460,110 520,130 550,160 C580,190 600,230 605,270 
-                           C610,310 600,350 590,380 C580,410 560,440 530,470 
-                           C500,500 460,520 420,530 C380,540 340,540 300,530 
-                           C260,520 230,500 200,470 C170,440 150,400 140,360 
-                           C130,320 135,280 150,240 C165,200 190,170 220,140 
-                           C250,110 290,105 340,100 C360,98 380,98 400,100 Z" 
-                        fill="#f4f4f4" stroke="#666" stroke-width="2" />
+                <!-- Background image approach -->
+                <div class="nk-map-image-container">
+                  <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e0fadc771553c52d334016_kp-03%20(1).png" alt="North Korea Map" class="nk-map-image">
                   
-                  <!-- Border with China and Russia to the north -->
-                  <path d="M150,240 C165,200 190,170 220,140 C250,110 290,105 340,100 C360,98 380,98 400,100 C460,110 520,130 550,160 C580,190 600,230 605,270" 
-                        fill="none" stroke="#333" stroke-width="3" stroke-dasharray="10,5" />
-                  
-                  <!-- Border with South Korea (DMZ) -->
-                  <path d="M150,240 C180,250 220,255 260,250 C300,245 340,240 380,245 C420,250 460,260 500,270 C540,280 580,290 605,270" 
-                        fill="none" stroke="#c00000" stroke-width="4" stroke-dasharray="5,5" />
-                  
-                  <!-- Yellow Sea coastline -->
-                  <path d="M150,240 C140,280 135,320 140,360 C145,400 160,430 180,460" 
-                        fill="none" stroke="#0066cc" stroke-width="2" />
-                  
-                  <!-- Sea of Japan/East Sea coastline -->
-                  <path d="M605,270 C600,310 590,350 570,390 C550,430 520,460 490,480" 
-                        fill="none" stroke="#0066cc" stroke-width="2" />
-                  
-                  <!-- Major cities/regions with more accurate positions -->
-                  <circle cx="380" cy="235" r="15" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Pyongyang" data-listeners="1245" />
-                  <circle cx="500" cy="210" r="8" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Hamhung" data-listeners="367" />
-                  <circle cx="320" cy="260" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Nampo" data-listeners="234" />
-                  <circle cx="450" cy="290" r="9" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Wonsan" data-listeners="301" />
-                  <circle cx="520" cy="170" r="6" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Chongjin" data-listeners="189" />
-                  <circle cx="180" cy="220" r="5" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Sinuiju" data-listeners="147" />
-                  <circle cx="400" cy="320" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Kaesong" data-listeners="213" />
-                  
-                  <!-- Text labels for neighboring countries -->
-                  <text x="300" y="80" fill="#666" font-size="16" font-weight="bold">CHINA</text>
-                  <text x="580" y="100" fill="#666" font-size="16" font-weight="bold">RUSSIA</text>
-                  <text x="350" y="400" fill="#666" font-size="16" font-weight="bold">SOUTH KOREA</text>
-                  <text x="100" y="350" fill="#0066cc" font-size="14" font-style="italic">Yellow Sea</text>
-                  <text x="600" y="350" fill="#0066cc" font-size="14" font-style="italic">Sea of Japan</text>
-                </svg>
+                  <!-- City markers positioned over the image -->
+                  <div class="city-marker" data-city="Pyongyang" data-listeners="1245" style="left: 38%; top: 51%"></div>
+                  <div class="city-marker" data-city="Hamhung" data-listeners="367" style="left: 63%; top: 40%"></div>
+                  <div class="city-marker" data-city="Nampo" data-listeners="234" style="left: 30%; top: 55%"></div>
+                  <div class="city-marker" data-city="Wonsan" data-listeners="301" style="left: 59%; top: 48%"></div>
+                  <div class="city-marker" data-city="Chongjin" data-listeners="189" style="left: 76%; top: 21%"></div>
+                  <div class="city-marker" data-city="Sinuiju" data-listeners="147" style="left: 22%; top: 36%"></div>
+                  <div class="city-marker" data-city="Kaesong" data-listeners="213" style="left: 40%; top: 65%"></div>
+                </div>
                 
+                <!-- Tooltip that will be positioned by JS -->
                 <div id="map-tooltip" class="map-tooltip" style="display: none;">
                   <div class="tooltip-city">City Name</div>
                   <div class="tooltip-listeners">0 listeners</div>
