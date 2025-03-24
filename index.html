@@ -1298,138 +1298,33 @@
       }
     }, false);
 
-    const firebaseConfig = {
-  apiKey: "AIzaSyBxcD2JrLAtiybztSQyLcXsJRxoM0n4JOk",
-  authDomain: "kimify-9672d.firebaseapp.com",
-  projectId: "kimify-9672d",
-  storageBucket: "kimify-9672d.appspot.com",
-  messagingSenderId: "68047655339",
-  appId: "1:68047655339:web:f931d51fbae8bec23002ee",
-  measurementId: "G-L40TWKYY90"
-};
-    
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const playlistsRef = db.collection('playlists');
-    const songsRef = db.collection('songs');
-    
-    // Initialize songs collection if it doesn't exist (only run this once)
-    function initializeDatabase() {
-      // Check if songs collection already has data
-      songsRef.limit(1).get().then(snapshot => {
-        if (snapshot.empty) {
-          // Add each song to Firestore
-          songs.forEach(song => {
-            songsRef.doc(song.id).set(song);
-          });
-          console.log("Songs collection initialized");
-        } else {
-          console.log("Songs collection already exists");
-        }
-      });
-    
-      // Check if playlists collection already has data
-      playlistsRef.limit(1).get().then(snapshot => {
-        if (snapshot.empty) {
-          // Add default playlists to Firestore
-          defaultPlaylists.forEach(playlist => {
-            playlistsRef.doc(playlist.id).set({
-              ...playlist,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-          });
-          console.log("Playlists collection initialized");
-        } else {
-          console.log("Playlists collection already exists");
-        }
-      });
-    }
-    
-    // Mock data for songs
-    const songs = [
-      { 
-        id: 'song1', 
-        title: 'Rather Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim1.png', 
-        audioFile: 'kim1.mp3' 
-      },
-      { 
-        id: 'song2', 
-        title: 'Towards Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim2.png', 
-        audioFile: 'kim2.mp3' 
-      },
-      { 
-        id: 'song3', 
-        title: 'This Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim3.png', 
-        audioFile: 'kim3.mp3' 
-      },
-      { 
-        id: 'song4', 
-        title: 'That\'s Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim4.png', 
-        audioFile: 'kim4.mp3' 
-      },
-      { 
-        id: 'song5', 
-        title: 'Marry Kim', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim5.png', 
-        audioFile: 'kim5.mp3' 
-      },
-      { 
-        id: 'song6', 
-        title: 'Kim Smile', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim6.png', 
-        audioFile: 'kim6.mp3' 
-      },
-      { 
-        id: 'song7', 
-        title: 'Kim Cry', 
-        artist: 'Kim Jong Un', 
-        imageFile: 'kim7.png', 
-        audioFile: 'kim7.mp3' 
-      },
-      { 
-        id: 'song8', 
-        title: 'Dynamite', 
-        artist: 'BTS', 
-        imageFile: 'BTS.png', 
-        audioFile: 'bts.mp3' 
-      }
-    ];
+    const JSONBIN_API_KEY = "$2a$10$NGkA2fWoRiY0MHSj7myf1.pYS4X9THInx5lnBDfCO7uJvXstkYD7i"; // Public key for demo
+const JSONBIN_BIN_ID = "create-new-bin"; // We'll update this after creating the bin
     
     // Default playlists
     const defaultPlaylists = [
-      {
-        id: 'playlist1',
-        name: 'Top Kim Songs',
-        description: 'The best songs from our Great Leader',
-        image: 'kim1.png',
-        songs: ['song1', 'song2', 'song3']
-      },
-      {
-        id: 'playlist2',
-        name: 'Kim is the Greatest',
-        description: 'A collection of hits celebrating our Supreme Leader',
-        image: 'kim2.png',
-        songs: ['song2', 'song4', 'song6']
-      },
-      {
-        id: 'playlist3',
-        name: 'PYONGYANG ANTHEM',
-        description: 'Official anthems of our glorious capital',
-        image: 'kim3.png',
-        songs: ['song3', 'song5', 'song7']
-      }
-    ];
+  {
+    id: 'playlist1',
+    name: 'Top Kim Songs',
+    description: 'The best songs from our Great Leader',
+    image: 'kim1.png',
+    songs: ['song1', 'song2', 'song3']
+  },
+  {
+    id: 'playlist2',
+    name: 'Kim is the Greatest',
+    description: 'A collection of hits celebrating our Supreme Leader',
+    image: 'kim2.png',
+    songs: ['song2', 'song4', 'song6']
+  },
+  {
+    id: 'playlist3',
+    name: 'PYONGYANG ANTHEM',
+    description: 'Official anthems of our glorious capital',
+    image: 'kim3.png',
+    songs: ['song3', 'song5', 'song7']
+  }
+];
     
     // Keep track of the current song and play state
     let currentSong = null;
@@ -1449,30 +1344,27 @@
     
     // Initialize the application
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Firebase data if needed (only needed the first time)
-      initializeDatabase();
-      
-      // Load songs to the home view
-      loadSongs();
-      
-      // Setup navigation
-      setupNavigation();
-      
-      // Initialize search functionality
-      initSearch();
-      
-      // Load playlists from Firebase
-      loadPlaylists();
-      
-      // Setup like button functionality
-      document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
-      
-      // Initialize volume display
-      setVolumePercent(audioPlayer.volume);
-      
-      // Setup add playlist button
-      document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
-    });
+  // Load songs to the home view
+  loadSongs();
+  
+  // Setup navigation
+  setupNavigation();
+  
+  // Initialize search functionality
+  initSearch();
+  
+  // Load playlists from JSONBin
+  loadPlaylists();
+  
+  // Setup like button functionality
+  document.getElementById('current-song-like').addEventListener('click', toggleLikeSong);
+  
+  // Initialize volume display
+  setVolumePercent(audioPlayer.volume);
+  
+  // Setup add playlist button
+  document.getElementById('add-playlist-btn').addEventListener('click', showAddPlaylistModal);
+});
     
     // Function to load songs to the home view
     function loadSongs() {
@@ -1514,38 +1406,68 @@
     
     // Function to load playlists
     function loadPlaylists() {
-      const playlistsContainer = document.getElementById('playlists-container');
-      
-      // Show loading spinner
-      playlistsContainer.innerHTML = '<div class="loader"></div>';
-      
-      // Set up a real-time listener for playlists
-      playlistsRef.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        playlistsContainer.innerHTML = '';
-        
-        if (snapshot.empty) {
-          playlistsContainer.innerHTML = '<p>No playlists found.</p>';
-          return;
-        }
-        
-        snapshot.forEach(doc => {
-          const playlist = doc.data();
-          const li = document.createElement('li');
-          li.dataset.playlistId = doc.id;
-          li.onclick = () => loadPlaylistView(doc.id);
-          
-          li.innerHTML = `
-            <img src="images/${playlist.image}" alt="${playlist.name}" class="playlist-mini-img">
-            ${playlist.name}
-          `;
-          
-          playlistsContainer.appendChild(li);
-        });
-      }, error => {
-        console.error("Error loading playlists: ", error);
-        playlistsContainer.innerHTML = '<p>Error loading playlists. Please refresh the page.</p>';
-      });
+  const playlistsContainer = document.getElementById('playlists-container');
+  playlistsContainer.innerHTML = '<div class="loader"></div>';
+  
+  // Get playlists from JSONBin
+  fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+    headers: {
+      'X-Master-Key': JSONBIN_API_KEY
     }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const playlists = data.record.playlists;
+    playlistsContainer.innerHTML = '';
+    
+    playlists.forEach(playlist => {
+      const li = document.createElement('li');
+      li.dataset.playlistId = playlist.id;
+      li.onclick = () => loadPlaylistView(playlist.id);
+      
+      li.innerHTML = `
+        <img src="images/${playlist.image}" alt="${playlist.name}" class="playlist-mini-img">
+        ${playlist.name}
+      `;
+      
+      playlistsContainer.appendChild(li);
+    });
+  })
+  .catch(error => {
+    console.error("Error loading playlists:", error);
+    // First time setup - create the bin
+    if (JSONBIN_BIN_ID === "create-new-bin") {
+      createJsonBin();
+    } else {
+      playlistsContainer.innerHTML = '<p>Error loading playlists. Please refresh.</p>';
+    }
+  });
+}
+
+function createJsonBin() {
+  fetch('https://api.jsonbin.io/v3/b', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': JSONBIN_API_KEY
+    },
+    body: JSON.stringify({
+      playlists: defaultPlaylists
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("JSONBin created successfully. Update your code with this BIN_ID:", data.metadata.id);
+    alert("First time setup complete! Please copy the BIN_ID from the console and update your code.");
+    // Now load using the new bin ID
+    JSONBIN_BIN_ID = data.metadata.id;
+    loadPlaylists();
+  })
+  .catch(error => {
+    console.error("Error creating JSONBin:", error);
+    playlistsContainer.innerHTML = '<p>Error setting up playlists storage. Please check console.</p>';
+  });
+}
     
     // Function to setup navigation
     function setupNavigation() {
@@ -1684,75 +1606,82 @@
     
     // Function to load a specific playlist view
     function loadPlaylistView(playlistId) {
-      const playlistView = document.getElementById('playlist-view');
-      playlistView.innerHTML = '<div class="loader"></div>';
-      
-      // Show playlist view while loading
-      showView('playlist-view');
-      
-      // Get the playlist document
-      playlistsRef.doc(playlistId).get().then(doc => {
-        if (!doc.exists) {
-          playlistView.innerHTML = '<p>Playlist not found.</p>';
-          return;
-        }
-        
-        const playlist = doc.data();
-        
-        // Get all songs in this playlist
-        getSongsFromPlaylist(playlist.songs).then(playlistSongs => {
-          // Populate the playlist view
-          playlistView.innerHTML = `
-            <div class="playlist-header">
-              <div class="playlist-cover">
-                <img src="images/${playlist.image}" alt="${playlist.name}">
-              </div>
-              <div class="playlist-info">
-                <div class="playlist-type">Playlist</div>
-                <h1 class="playlist-title">${playlist.name}</h1>
-                <div class="playlist-description">${playlist.description}</div>
-                <div class="playlist-meta">${playlistSongs.length} songs</div>
-              </div>
-            </div>
-            
-            <table class="playlist-songs">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Duration</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${playlistSongs.map((song, index) => `
-                  <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
-                    <td class="song-number">${index + 1}</td>
-                    <td>
-                      <div class="song-cell">
-                        <div class="song-cell-img">
-                          <img src="images/${song.imageFile}" alt="${song.title}">
-                        </div>
-                        <div class="song-cell-info">
-                          <div class="song-cell-title">${song.title}</div>
-                          <div class="song-cell-artist">${song.artist}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>3:45</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          `;
-        }).catch(error => {
-          console.error("Error getting playlist songs: ", error);
-          playlistView.innerHTML = '<p>Error loading playlist songs. Please try again.</p>';
-        });
-      }).catch(error => {
-        console.error("Error loading playlist: ", error);
-        playlistView.innerHTML = '<p>Error loading playlist. Please try again.</p>';
-      });
+  const playlistView = document.getElementById('playlist-view');
+  playlistView.innerHTML = '<div class="loader"></div>';
+  
+  // Show playlist view while loading
+  showView('playlist-view');
+  
+  // Get playlists from JSONBin
+  fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+    headers: {
+      'X-Master-Key': JSONBIN_API_KEY
     }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const playlists = data.record.playlists;
+    const playlist = playlists.find(p => p.id === playlistId);
+    
+    if (!playlist) {
+      playlistView.innerHTML = '<p>Playlist not found.</p>';
+      return;
+    }
+    
+    // Get playlist songs
+    const playlistSongs = playlist.songs.map(songId => 
+      songs.find(s => s.id === songId)
+    ).filter(Boolean);
+    
+    // Display the playlist
+    playlistView.innerHTML = `
+      <div class="playlist-header">
+        <div class="playlist-cover">
+          <img src="images/${playlist.image}" alt="${playlist.name}">
+        </div>
+        <div class="playlist-info">
+          <div class="playlist-type">Playlist</div>
+          <h1 class="playlist-title">${playlist.name}</h1>
+          <div class="playlist-description">${playlist.description}</div>
+          <div class="playlist-meta">${playlistSongs.length} songs</div>
+        </div>
+      </div>
+      
+      <table class="playlist-songs">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${playlistSongs.map((song, index) => `
+            <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
+              <td class="song-number">${index + 1}</td>
+              <td>
+                <div class="song-cell">
+                  <div class="song-cell-img">
+                    <img src="images/${song.imageFile}" alt="${song.title}">
+                  </div>
+                  <div class="song-cell-info">
+                    <div class="song-cell-title">${song.title}</div>
+                    <div class="song-cell-artist">${song.artist}</div>
+                  </div>
+                </div>
+              </td>
+              <td>3:45</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  })
+  .catch(error => {
+    console.error("Error loading playlist:", error);
+    playlistView.innerHTML = '<p>Error loading playlist. Please try again.</p>';
+  });
+}
     
     // Helper function to get songs from a playlist
     async function getSongsFromPlaylist(songIds) {
@@ -2283,17 +2212,47 @@
     
     // Function to create a new playlist in Firebase
     function createPlaylist(name, description, image, songs = []) {
-      const playlistId = 'playlist-' + Date.now();
-      
-      return playlistsRef.doc(playlistId).set({
-        id: playlistId,
-        name: name,
-        description: description || 'No description',
-        image: image,
-        songs: songs,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+  fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+    headers: {
+      'X-Master-Key': JSONBIN_API_KEY
     }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const playlists = data.record.playlists;
+    const playlistId = 'playlist-' + Date.now();
+    
+    // Add new playlist
+    playlists.push({
+      id: playlistId,
+      name: name,
+      description: description || 'No description',
+      image: image,
+      songs: songs,
+      createdAt: new Date().toISOString()
+    });
+    
+    // Update the JSONBin
+    return fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_API_KEY
+      },
+      body: JSON.stringify({
+        playlists: playlists
+      })
+    });
+  })
+  .then(() => {
+    // Reload playlists
+    loadPlaylists();
+  })
+  .catch(error => {
+    console.error("Error creating playlist:", error);
+    alert("Error creating playlist. Please try again.");
+  });
+}
     
     // Add playlist modal
     function showAddPlaylistModal() {
