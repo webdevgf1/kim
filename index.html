@@ -1783,6 +1783,249 @@
     height: 100%;
     object-fit: cover;
   }
+
+  .map-modal-content {
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background-color: #282828;
+    border-radius: 8px;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .map-modal-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .map-modal-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Comfortaa', cursive;
+    color: white;
+    margin: 0;
+  }
+  
+  .map-close-btn {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .map-close-btn:hover {
+    color: white;
+  }
+  
+  .map-modal-body {
+    padding: 24px;
+  }
+  
+  .map-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  
+  .stats-item {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .stats-number {
+    font-size: 32px;
+    font-weight: bold;
+    font-family: 'Comfortaa', cursive;
+    margin-bottom: 4px;
+  }
+  
+  .stats-label {
+    font-size: 14px;
+    color: #b3b3b3;
+  }
+  
+  .map-container {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border: 2px solid #c00000;
+  }
+  
+  .map-overlay-text {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    font-size: 16px;
+    font-family: 'Comfortaa', cursive;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  #north-korea-map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  #nk-map-svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .city {
+    cursor: pointer;
+    transition: r 0.3s;
+  }
+  
+  .city:hover {
+    r: 20;
+  }
+  
+  .map-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 5;
+    border: 1px solid #c00000;
+  }
+  
+  .tooltip-city {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  
+  .map-footer {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+  }
+  
+  .map-legend {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .legend-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #c00000;
+    margin-right: 12px;
+    border: 2px solid white;
+  }
+  
+  .legend-line {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin-right: 12px;
+    position: relative;
+  }
+  
+  .legend-line:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 3px dashed #333;
+  }
+  
+  .legend-text {
+    font-size: 14px;
+    color: #b3b3b3;
+  }
+  
+  .realtime-updates {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  
+  .update-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    font-family: 'Comfortaa', cursive;
+    color: #c00000;
+  }
+  
+  .update-feed {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .update-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    color: #b3b3b3;
+  }
+  
+  .update-item:last-child {
+    border-bottom: none;
+  }
+  
+  @media (max-width: 768px) {
+    .map-footer {
+      grid-template-columns: 1fr;
+    }
+    
+    .map-container {
+      height: 400px;
+    }
+  }
+  
+  /* Blinking pulse animation for cities */
+  @keyframes pulse {
+    0% {
+      r: 15;
+      opacity: 1;
+    }
+    50% {
+      r: 25;
+      opacity: 0.6;
+    }
+    100% {
+      r: 15;
+      opacity: 1;
+    }
+  }
+  
+  .pulse {
+    animation: pulse 2s infinite;
+  }
   </style>
   <!-- Adding Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -3585,6 +3828,266 @@ function initMemeGenerator() {
   }
 }
 
+function addMapNavLink() {
+    const nav = document.querySelector('nav');
+    const wrappedLink = document.getElementById('wrapped-link');
+    
+    // Create map link element
+    const mapLink = document.createElement('a');
+    mapLink.href = "#";
+    mapLink.className = "nav-link";
+    mapLink.id = "map-link";
+    mapLink.innerHTML = `
+      <span class="icon"><i class="fas fa-map-marked-alt"></i></span>
+      <span>Live Listeners</span>
+    `;
+    
+    // Insert after wrapped link
+    nav.insertBefore(mapLink, wrappedLink.nextSibling);
+    
+    // Add event listener
+    mapLink.addEventListener('click', function() {
+      showMapModal();
+    });
+  }
+  
+  // Function to show the map modal
+  function showMapModal() {
+    document.getElementById('map-modal').style.display = 'flex';
+    initializeMap();
+  }
+  
+  // Function to close the map modal
+  function closeMapModal() {
+    document.getElementById('map-modal').style.display = 'none';
+    stopMapUpdates();
+  }
+  
+  // Map initialization and updates
+  let updateInterval;
+  let cityElements;
+  
+  function initializeMap() {
+    // Clear previous interval if exists
+    if (updateInterval) {
+      clearInterval(updateInterval);
+    }
+    
+    // Get all city elements
+    cityElements = document.querySelectorAll('.city');
+    
+    // Add event listeners to cities
+    cityElements.forEach(city => {
+      city.addEventListener('mouseenter', showTooltip);
+      city.addEventListener('mouseleave', hideTooltip);
+    });
+    
+    // Add pulse animation to random cities
+    addRandomPulse();
+    
+    // Start updates for live listeners count
+    updateListenerCount();
+    
+    // Add live updates to the feed
+    startLiveUpdates();
+  }
+  
+  function stopMapUpdates() {
+    if (updateInterval) {
+      clearInterval(updateInterval);
+      updateInterval = null;
+    }
+  }
+  
+  function showTooltip(e) {
+    const city = e.target;
+    const tooltip = document.getElementById('map-tooltip');
+    
+    // Get city data
+    const cityName = city.getAttribute('data-city');
+    const listeners = city.getAttribute('data-listeners');
+    
+    // Update tooltip content
+    tooltip.querySelector('.tooltip-city').textContent = cityName;
+    tooltip.querySelector('.tooltip-listeners').textContent = `${listeners} listeners`;
+    
+    // Get position
+    const rect = city.getBoundingClientRect();
+    const mapContainer = document.getElementById('north-korea-map-container');
+    const mapRect = mapContainer.getBoundingClientRect();
+    
+    // Position tooltip above the city
+    tooltip.style.left = `${rect.left - mapRect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+    tooltip.style.top = `${rect.top - mapRect.top - tooltip.offsetHeight - 10}px`;
+    
+    // Show tooltip
+    tooltip.style.display = 'block';
+  }
+  
+  function hideTooltip() {
+    document.getElementById('map-tooltip').style.display = 'none';
+  }
+  
+  function addRandomPulse() {
+    // Remove existing pulse animations
+    cityElements.forEach(city => {
+      city.classList.remove('pulse');
+    });
+    
+    // Add pulse to 1-3 random cities
+    const numPulses = Math.floor(Math.random() * 3) + 1;
+    const cities = Array.from(cityElements);
+    
+    for (let i = 0; i < numPulses; i++) {
+      if (cities.length > 0) {
+        const randomIndex = Math.floor(Math.random() * cities.length);
+        cities[randomIndex].classList.add('pulse');
+        cities.splice(randomIndex, 1);
+      }
+    }
+  }
+  
+  function updateListenerCount() {
+    let totalListeners = 0;
+    
+    // Calculate total listeners
+    cityElements.forEach(city => {
+      totalListeners += parseInt(city.getAttribute('data-listeners'));
+    });
+    
+    // Update display
+    document.getElementById('online-listeners').textContent = totalListeners.toLocaleString();
+    
+    // Randomly adjust city listeners
+    updateInterval = setInterval(() => {
+      let changesMade = false;
+      
+      cityElements.forEach(city => {
+        // 20% chance to update each city
+        if (Math.random() < 0.2) {
+          changesMade = true;
+          let listeners = parseInt(city.getAttribute('data-listeners'));
+          
+          // Random change between -5 and +10
+          const change = Math.floor(Math.random() * 16) - 5;
+          listeners = Math.max(10, listeners + change);
+          
+          city.setAttribute('data-listeners', listeners);
+          
+          // Update tooltip if visible
+          const tooltip = document.getElementById('map-tooltip');
+          if (tooltip.style.display === 'block') {
+            const cityName = tooltip.querySelector('.tooltip-city').textContent;
+            if (cityName === city.getAttribute('data-city')) {
+              tooltip.querySelector('.tooltip-listeners').textContent = `${listeners} listeners`;
+            }
+          }
+        }
+      });
+      
+      if (changesMade) {
+        // Recalculate total
+        let newTotal = 0;
+        cityElements.forEach(city => {
+          newTotal += parseInt(city.getAttribute('data-listeners'));
+        });
+        
+        // Update display with animation
+        animateNumber(document.getElementById('online-listeners'), newTotal);
+        
+        // Occasionally change pulse animation
+        if (Math.random() < 0.3) {
+          addRandomPulse();
+        }
+      }
+    }, 5000);
+  }
+  
+  function animateNumber(element, newValue) {
+    const oldValue = parseInt(element.textContent.replace(/,/g, ''));
+    const difference = newValue - oldValue;
+    const steps = 20;
+    const increment = difference / steps;
+    let currentStep = 0;
+    
+    const updateFn = () => {
+      currentStep++;
+      const currentValue = Math.round(oldValue + increment * currentStep);
+      element.textContent = currentValue.toLocaleString();
+      
+      if (currentStep < steps) {
+        requestAnimationFrame(updateFn);
+      }
+    };
+    
+    requestAnimationFrame(updateFn);
+  }
+  
+  function startLiveUpdates() {
+    const updates = document.getElementById('live-updates');
+    const songs = [
+      "Death to America (Dance Remix)",
+      "Miss You Ye (Rocket Man)",
+      "My Nuclear Button Is Bigger",
+      "Internet? Never Heard of It",
+      "Kim Style",
+      "Sad Kimmy",
+      "gym flow",
+      "firework",
+      "Hasnt started yet",
+      "rapstuff"
+    ];
+    
+    const actions = [
+      "is listening to",
+      "added to playlist",
+      "liked",
+      "shared with the State Security Department",
+      "downloaded for offline listening in bunker",
+      "played 10 times today"
+    ];
+    
+    // Add new updates occasionally
+    setInterval(() => {
+      // Get random city
+      const randomCityIndex = Math.floor(Math.random() * cityElements.length);
+      const randomCity = cityElements[randomCityIndex].getAttribute('data-city');
+      
+      // Get random song and action
+      const randomSong = songs[Math.floor(Math.random() * songs.length)];
+      const randomAction = actions[Math.floor(Math.random() * actions.length)];
+      
+      // Create new update item
+      const newUpdate = document.createElement('div');
+      newUpdate.className = 'update-item';
+      
+      // Decide between user action or group action
+      if (Math.random() < 0.7) {
+        newUpdate.textContent = `User in ${randomCity} ${randomAction} "${randomSong}"`;
+      } else {
+        const userCount = Math.floor(Math.random() * 10) + 2;
+        newUpdate.textContent = `${userCount} users in ${randomCity} ${
+          ["joined in the last hour", "are currently active", "reported for unauthorized dancing"][Math.floor(Math.random() * 3)]
+        }`;
+      }
+      
+      // Add to feed
+      updates.insertBefore(newUpdate, updates.firstChild);
+      
+      // Remove oldest if more than 20
+      if (updates.children.length > 20) {
+        updates.removeChild(updates.lastChild);
+      }
+    }, 3000);
+  }
+  
+  // Add initialization functions to document ready event
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addMapNavLink);
+  } else {
+    addMapNavLink();
+  }
+
 // Add initialization function for meme generator
 document.addEventListener('DOMContentLoaded', function() {
   addMemeNavLink();
@@ -3698,6 +4201,80 @@ document.addEventListener('DOMContentLoaded', function() {
               <div class="recent-memes-grid" id="recent-memes-container">
                 <!-- Recently created memes will appear here -->
                 <div class="empty-memes-message">Your creations will appear here</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="map-modal" class="modal-overlay" style="display: none;">
+        <div class="map-modal-content">
+          <div class="map-modal-header">
+            <h2>Kimify Live Listeners</h2>
+            <button class="map-close-btn" onclick="closeMapModal()">×</button>
+          </div>
+          
+          <div class="map-modal-body">
+            <div class="map-stats">
+              <div class="stats-item">
+                <div class="stats-number" id="online-listeners">2,483</div>
+                <div class="stats-label">Online Listeners</div>
+              </div>
+              <div class="stats-item">
+                <div class="stats-number" id="average-happiness">0%</div>
+                <div class="stats-label">Average Happiness</div>
+              </div>
+              <div class="stats-item">
+                <div class="stats-number" id="government-approval">100%</div>
+                <div class="stats-label">Government Approval</div>
+              </div>
+            </div>
+            
+            <div class="map-container">
+              <div class="map-overlay-text">Democratic People's Republic of Korea</div>
+              <div id="north-korea-map-container">
+                <!-- SVG Map will go here -->
+                <svg width="100%" height="100%" viewBox="0 0 800 600" id="nk-map-svg">
+                  <!-- Base map of North Korea -->
+                  <path d="M400,100 Q530,150 600,300 Q640,400 600,500 Q530,570 400,580 Q270,570 200,500 Q160,400 200,300 Q270,150 400,100" fill="#f4f4f4" stroke="#666" stroke-width="2" />
+                  
+                  <!-- Major cities/regions -->
+                  <circle cx="400" cy="250" r="15" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Pyongyang" data-listeners="1245" />
+                  <circle cx="480" cy="180" r="8" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Hamhung" data-listeners="367" />
+                  <circle cx="300" cy="200" r="7" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Nampo" data-listeners="234" />
+                  <circle cx="350" cy="350" r="9" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Wonsan" data-listeners="301" />
+                  <circle cx="500" cy="400" r="6" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Chongjin" data-listeners="189" />
+                  <circle cx="250" cy="300" r="5" fill="#c00000" stroke="#fff" stroke-width="2" class="city" data-city="Sinuiju" data-listeners="147" />
+                  
+                  <!-- Borders -->
+                  <path d="M200,300 Q170,200 230,150 Q300,120 400,100 Q500,120 570,150 Q630,200 600,300" fill="none" stroke="#333" stroke-width="3" stroke-dasharray="10,5" />
+                </svg>
+                
+                <div id="map-tooltip" class="map-tooltip" style="display: none;">
+                  <div class="tooltip-city">City Name</div>
+                  <div class="tooltip-listeners">0 listeners</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="map-footer">
+              <div class="map-legend">
+                <div class="legend-item">
+                  <div class="legend-circle"></div>
+                  <div class="legend-text">Active Listener Locations</div>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-line"></div>
+                  <div class="legend-text">Border with Imperialist Nations</div>
+                </div>
+              </div>
+              
+              <div class="realtime-updates">
+                <div class="update-title">Live Updates</div>
+                <div class="update-feed" id="live-updates">
+                  <div class="update-item">User in Pyongyang is listening to "Death to America (Dance Remix)"</div>
+                  <div class="update-item">User in Wonsan added "Miss You Ye (Rocket Man)" to playlist</div>
+                  <div class="update-item">3 users in Hamhung joined in the last hour</div>
+                </div>
               </div>
             </div>
           </div>
