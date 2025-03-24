@@ -6,8 +6,9 @@
   <title>Kimify - Kim Jong Un Remixes</title>
   <!-- Favicon -->
   <link rel="icon" href="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/67e09ec69edb8dc3456829f1_kimmy.png" type="image/png">
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
+  <!-- Updated Firebase scripts with compatibility version -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <style>
     /* Font imports */
     @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
@@ -227,7 +228,8 @@
     .song-img-container {
       width: 100%;
       aspect-ratio: 1;
-      margin-bottom: 0;
+      margin-bottom: 8px;
+      border-radius: 4px;
       overflow: hidden;
       background-color: #282828;
       position: relative;
@@ -367,7 +369,6 @@
       overflow: hidden;
       width: 100%;
     }
-    
     .song-card:before {
       content: '';
       position: absolute;
@@ -411,15 +412,6 @@
       text-overflow: ellipsis;
     }
     
-    .song-img-container {
-      width: 100%;
-      aspect-ratio: 1;
-      margin-bottom: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      background-color: #282828;
-    }
-    
     .song-img-placeholder {
       width: 100%;
       height: 100%;
@@ -435,22 +427,6 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(135deg, rgba(80, 80, 80, 0.2) 0%, rgba(40, 40, 40, 0.2) 100%);
-    }
-    
-    .song-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .song-artist {
-      font-size: 13px;
-      color: #b3b3b3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     
     .section-title {
@@ -593,25 +569,6 @@
     
     .player-controls {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 24px;
-    }
-    
-    .control-buttons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 8px;
-    }
-    
-    .player-controls {
-      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -645,6 +602,11 @@
       border-radius: 2px;
       position: relative;
       cursor: pointer;
+      width: 500px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
     }
     
     .timeline-progress {
@@ -684,14 +646,6 @@
       font-size: 12px;
       color: #b3b3b3;
       min-width: 40px;
-    }
-    
-    .player-timeline {
-      width: 500px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
     }
     
     .timeline {
@@ -1008,7 +962,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
     /* Modal Styles */
     .modal-overlay {
       position: fixed;
@@ -1085,7 +1038,7 @@
       cursor: pointer;
       border: none;
     }
-    
+
     .modal-btn-cancel {
       background-color: transparent;
       color: white;
@@ -1337,7 +1290,6 @@
 
   <!-- Audio element to handle actual playback -->
   <audio id="audio-player" src=""></audio>
-  
   <script>
     // Prevent text selection to avoid flickering
     document.addEventListener('mousedown', function(e) {
@@ -1348,18 +1300,52 @@
     
     // Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDv5P0xNnXYNB2hHnmkZV2rHWYOI17QxL0",
-      authDomain: "kimify-music.firebaseapp.com",
-      projectId: "kimify-music",
-      storageBucket: "kimify-music.appspot.com",
-      messagingSenderId: "235465912343",
-      appId: "1:235465912343:web:a66e41f71a6d85e7c73a06"
-    };
+  apiKey: "AIzaSyAP75EAzsKX3JyZJl-VseL4xyx6yBGdgKU",
+  authDomain: "kimify-music.firebaseapp.com",
+  projectId: "kimify-music",
+  storageBucket: "kimify-music.firebasestorage.app",
+  messagingSenderId: "496009552848",
+  appId: "1:496009552848:web:c59ef6e585bc80c486cfd5",
+  measurementId: "G-58PM18X7N2"
+};
     
-    // Database references
-    let db;
-    let playlistsRef;
-    let songsRef;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const playlistsRef = db.collection('playlists');
+    const songsRef = db.collection('songs');
+    
+    // Initialize songs collection if it doesn't exist (only run this once)
+    function initializeDatabase() {
+      // Check if songs collection already has data
+      songsRef.limit(1).get().then(snapshot => {
+        if (snapshot.empty) {
+          // Add each song to Firestore
+          songs.forEach(song => {
+            songsRef.doc(song.id).set(song);
+          });
+          console.log("Songs collection initialized");
+        } else {
+          console.log("Songs collection already exists");
+        }
+      });
+    
+      // Check if playlists collection already has data
+      playlistsRef.limit(1).get().then(snapshot => {
+        if (snapshot.empty) {
+          // Add default playlists to Firestore
+          defaultPlaylists.forEach(playlist => {
+            playlistsRef.doc(playlist.id).set({
+              ...playlist,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          });
+          console.log("Playlists collection initialized");
+        } else {
+          console.log("Playlists collection already exists");
+        }
+      });
+    }
     
     // Mock data for songs
     const songs = [
@@ -1464,6 +1450,9 @@
     
     // Initialize the application
     document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Firebase data if needed (only needed the first time)
+      initializeDatabase();
+      
       // Load songs to the home view
       loadSongs();
       
@@ -1473,7 +1462,7 @@
       // Initialize search functionality
       initSearch();
       
-      // Load playlists
+      // Load playlists from Firebase
       loadPlaylists();
       
       // Setup like button functionality
@@ -1491,29 +1480,36 @@
       const songsGrid = document.getElementById('songs-grid');
       songsGrid.innerHTML = '';
       
-      songs.forEach(song => {
-        const songCard = document.createElement('div');
-        songCard.className = 'song-card';
-        songCard.dataset.songId = song.id;
-        
-        if (song.id === 'song8') {
-          // BTS song should show the error dialog
-          songCard.onclick = showErrorDialog;
-        } else {
-          songCard.onclick = () => playSong(song.id);
-        }
-        
-        songCard.innerHTML = `
-          <div class="song-img-container">
-            <img src="images/${song.imageFile}" alt="${song.title}" class="song-img">
-          </div>
-          <div class="song-info-container">
-            <div class="song-title">${song.title}</div>
-            <div class="song-artist">${song.artist}</div>
-          </div>
-        `;
-        
-        songsGrid.appendChild(songCard);
+      // Get songs from Firebase
+      songsRef.get().then(snapshot => {
+        snapshot.forEach(doc => {
+          const song = doc.data();
+          const songCard = document.createElement('div');
+          songCard.className = 'song-card';
+          songCard.dataset.songId = song.id;
+          
+          if (song.id === 'song8') {
+            // BTS song should show the error dialog
+            songCard.onclick = showErrorDialog;
+          } else {
+            songCard.onclick = () => playSong(song.id);
+          }
+          
+          songCard.innerHTML = `
+            <div class="song-img-container">
+              <img src="images/${song.imageFile}" alt="${song.title}" class="song-img">
+            </div>
+            <div class="song-info-container">
+              <div class="song-title">${song.title}</div>
+              <div class="song-artist">${song.artist}</div>
+            </div>
+          `;
+          
+          songsGrid.appendChild(songCard);
+        });
+      }).catch(error => {
+        console.error("Error loading songs:", error);
+        songsGrid.innerHTML = '<p>Error loading songs. Please refresh the page.</p>';
       });
     }
     
@@ -1521,15 +1517,23 @@
     function loadPlaylists() {
       const playlistsContainer = document.getElementById('playlists-container');
       
-      // In a real app, we would fetch this from Firebase
-      // For now, we'll use our mock data
-      setTimeout(() => {
+      // Show loading spinner
+      playlistsContainer.innerHTML = '<div class="loader"></div>';
+      
+      // Set up a real-time listener for playlists
+      playlistsRef.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
         playlistsContainer.innerHTML = '';
         
-        defaultPlaylists.forEach(playlist => {
+        if (snapshot.empty) {
+          playlistsContainer.innerHTML = '<p>No playlists found.</p>';
+          return;
+        }
+        
+        snapshot.forEach(doc => {
+          const playlist = doc.data();
           const li = document.createElement('li');
-          li.dataset.playlistId = playlist.id;
-          li.onclick = () => loadPlaylistView(playlist.id);
+          li.dataset.playlistId = doc.id;
+          li.onclick = () => loadPlaylistView(doc.id);
           
           li.innerHTML = `
             <img src="images/${playlist.image}" alt="${playlist.name}" class="playlist-mini-img">
@@ -1538,7 +1542,10 @@
           
           playlistsContainer.appendChild(li);
         });
-      }, 500); // Simulate loading time
+      }, error => {
+        console.error("Error loading playlists: ", error);
+        playlistsContainer.innerHTML = '<p>Error loading playlists. Please refresh the page.</p>';
+      });
     }
     
     // Function to setup navigation
@@ -1592,22 +1599,36 @@
           clearSearch.style.display = 'block';
           searchMessage.style.display = 'none';
           
-          // Filter songs based on query
-          const filteredSongs = songs.filter(song => 
-            song.title.toLowerCase().includes(query) || 
-            song.artist.toLowerCase().includes(query)
-          );
-          
-          // Display results
-          if (filteredSongs.length > 0) {
-            displaySearchResults(filteredSongs);
-          } else {
+          // Search in Firebase
+          songsRef.get().then(snapshot => {
+            const filteredSongs = [];
+            
+            snapshot.forEach(doc => {
+              const song = doc.data();
+              if (song.title.toLowerCase().includes(query) || 
+                  song.artist.toLowerCase().includes(query)) {
+                filteredSongs.push(song);
+              }
+            });
+            
+            // Display results
+            if (filteredSongs.length > 0) {
+              displaySearchResults(filteredSongs);
+            } else {
+              searchResults.innerHTML = `
+                <div class="search-message">
+                  <p>No results found for "${query}"</p>
+                </div>
+              `;
+            }
+          }).catch(error => {
+            console.error("Error searching songs:", error);
             searchResults.innerHTML = `
               <div class="search-message">
-                <p>No results found for "${query}"</p>
+                <p>Error searching. Please try again.</p>
               </div>
             `;
-          }
+          });
         } else {
           clearSearch.style.display = 'none';
           searchResults.innerHTML = '';
@@ -1664,106 +1685,144 @@
     
     // Function to load a specific playlist view
     function loadPlaylistView(playlistId) {
-      // Find the playlist
-      const playlist = defaultPlaylists.find(p => p.id === playlistId);
-      
-      if (!playlist) return;
-      
-      // Get the playlist's songs
-      const playlistSongs = playlist.songs.map(songId => 
-        songs.find(s => s.id === songId)
-      ).filter(Boolean);
-      
-      // Populate the playlist view
       const playlistView = document.getElementById('playlist-view');
+      playlistView.innerHTML = '<div class="loader"></div>';
       
-      playlistView.innerHTML = `
-        <div class="playlist-header">
-          <div class="playlist-cover">
-            <img src="images/${playlist.image}" alt="${playlist.name}">
-          </div>
-          <div class="playlist-info">
-            <div class="playlist-type">Playlist</div>
-            <h1 class="playlist-title">${playlist.name}</h1>
-            <div class="playlist-description">${playlist.description}</div>
-            <div class="playlist-meta">${playlistSongs.length} songs</div>
-          </div>
-        </div>
-        
-        <table class="playlist-songs">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${playlistSongs.map((song, index) => `
-              <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
-                <td class="song-number">${index + 1}</td>
-                <td>
-                  <div class="song-cell">
-                    <div class="song-cell-img">
-                      <img src="images/${song.imageFile}" alt="${song.title}">
-                    </div>
-                    <div class="song-cell-info">
-                      <div class="song-cell-title">${song.title}</div>
-                      <div class="song-cell-artist">${song.artist}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>3:45</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-      
-      // Show the playlist view
+      // Show playlist view while loading
       showView('playlist-view');
+      
+      // Get the playlist document
+      playlistsRef.doc(playlistId).get().then(doc => {
+        if (!doc.exists) {
+          playlistView.innerHTML = '<p>Playlist not found.</p>';
+          return;
+        }
+        
+        const playlist = doc.data();
+        
+        // Get all songs in this playlist
+        getSongsFromPlaylist(playlist.songs).then(playlistSongs => {
+          // Populate the playlist view
+          playlistView.innerHTML = `
+            <div class="playlist-header">
+              <div class="playlist-cover">
+                <img src="images/${playlist.image}" alt="${playlist.name}">
+              </div>
+              <div class="playlist-info">
+                <div class="playlist-type">Playlist</div>
+                <h1 class="playlist-title">${playlist.name}</h1>
+                <div class="playlist-description">${playlist.description}</div>
+                <div class="playlist-meta">${playlistSongs.length} songs</div>
+              </div>
+            </div>
+            
+            <table class="playlist-songs">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${playlistSongs.map((song, index) => `
+                  <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
+                    <td class="song-number">${index + 1}</td>
+                    <td>
+                      <div class="song-cell">
+                        <div class="song-cell-img">
+                          <img src="images/${song.imageFile}" alt="${song.title}">
+                        </div>
+                        <div class="song-cell-info">
+                          <div class="song-cell-title">${song.title}</div>
+                          <div class="song-cell-artist">${song.artist}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>3:45</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        }).catch(error => {
+          console.error("Error getting playlist songs: ", error);
+          playlistView.innerHTML = '<p>Error loading playlist songs. Please try again.</p>';
+        });
+      }).catch(error => {
+        console.error("Error loading playlist: ", error);
+        playlistView.innerHTML = '<p>Error loading playlist. Please try again.</p>';
+      });
+    }
+    
+    // Helper function to get songs from a playlist
+    async function getSongsFromPlaylist(songIds) {
+      if (!songIds || songIds.length === 0) return [];
+      
+      try {
+        // Get all songs from Firestore
+        const snapshot = await songsRef.where(firebase.firestore.FieldPath.documentId(), 'in', songIds).get();
+        
+        // Map to array and maintain order
+        const songs = {};
+        snapshot.forEach(doc => {
+          songs[doc.id] = doc.data();
+        });
+        
+        // Return songs in the same order as the songIds array
+        return songIds.map(id => songs[id]).filter(Boolean);
+      } catch (error) {
+        console.error("Error fetching songs:", error);
+        return [];
+      }
     }
     
     // Function to play a song
     function playSong(songId) {
-      // Find the song
-      const song = songs.find(s => s.id === songId);
-      
-      if (!song) return;
-      
-      currentSong = song;
-      
-      // Update the current song display
-      document.getElementById('current-song-title').textContent = song.title;
-      document.getElementById('current-song-artist').textContent = song.artist;
-      
-      // Set the image in the player
-      const currentSongImg = document.createElement('img');
-      currentSongImg.src = `images/${song.imageFile}`;
-      currentSongImg.alt = song.title;
-      currentSongImg.className = 'now-playing-img';
-      
-      const imgContainer = document.getElementById('current-song-img-container');
-      imgContainer.innerHTML = '';
-      imgContainer.appendChild(currentSongImg);
-      
-      // Set the audio source
-      audioPlayer.src = `audio/${song.audioFile}`;
-      
-      // Play the song
-      audioPlayer.load();
-      audioPlayer.play().catch(e => {
-        console.log("Audio playback failed. This is normal if no audio file exists yet.", e);
+      // Get song from Firebase
+      songsRef.doc(songId).get().then(doc => {
+        if (!doc.exists) {
+          console.error("Song not found:", songId);
+          return;
+        }
+        
+        const song = doc.data();
+        currentSong = song;
+        
+        // Update the current song display
+        document.getElementById('current-song-title').textContent = song.title;
+        document.getElementById('current-song-artist').textContent = song.artist;
+        
+        // Set the image in the player
+        const currentSongImg = document.createElement('img');
+        currentSongImg.src = `images/${song.imageFile}`;
+        currentSongImg.alt = song.title;
+        currentSongImg.className = 'now-playing-img';
+        
+        const imgContainer = document.getElementById('current-song-img-container');
+        imgContainer.innerHTML = '';
+        imgContainer.appendChild(currentSongImg);
+        
+        // Set the audio source
+        audioPlayer.src = `audio/${song.audioFile}`;
+        
+        // Play the song
+        audioPlayer.load();
+        audioPlayer.play().catch(e => {
+          console.log("Audio playback failed. This is normal if no audio file exists yet.", e);
+        });
+        
+        isPlaying = true;
+        updatePlayButton();
+        
+        // Update like button state
+        updateLikeButton();
+        
+        // Add to recently played
+        addToRecentlyPlayed(songId);
+      }).catch(error => {
+        console.error("Error loading song:", error);
       });
-      
-      isPlaying = true;
-      updatePlayButton();
-      
-      // Update like button state
-      updateLikeButton();
-      
-      // Add to recently played
-      addToRecentlyPlayed(songId);
     }
     
     // Function to toggle play/pause
@@ -1819,7 +1878,6 @@
     // Timeline seeking with dragging
     const playerTimeline = document.querySelector('.player-timeline');
     const progressHandle = document.getElementById('progress-handle');
-    
     playerTimeline.addEventListener('mousedown', function(e) {
       if (!currentSong) return;
       
@@ -1921,7 +1979,7 @@
       const volumeIcon = document.getElementById('volume-icon');
       if (percent === 0) {
         volumeIcon.className = 'fas fa-volume-mute';
-    } else if (percent < 0.5) {
+      } else if (percent < 0.5) {
         volumeIcon.className = 'fas fa-volume-down';
       } else {
         volumeIcon.className = 'fas fa-volume-up';
@@ -2021,7 +2079,6 @@
         document.body.removeChild(overlay);
       });
     }
-
     // Liked songs functionality
     function getLikedSongs() {
       const likedSongs = localStorage.getItem(LIKED_SONGS_KEY);
@@ -2087,41 +2144,52 @@
         return;
       }
       
-      // Get the song objects
-      const likedSongs = likedSongIds.map(id => songs.find(s => s.id === id)).filter(Boolean);
-      
+      // Show loading spinner
+      likedSongsContainer.innerHTML = '<div class="loader"></div>';
       emptyMessage.style.display = 'none';
       
-      likedSongsContainer.innerHTML = `
-        <table class="playlist-songs">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${likedSongs.map((song, index) => `
-              <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
-                <td class="song-number">${index + 1}</td>
-                <td>
-                  <div class="song-cell">
-                    <div class="song-cell-img">
-                      <img src="images/${song.imageFile}" alt="${song.title}">
-                    </div>
-                    <div class="song-cell-info">
-                      <div class="song-cell-title">${song.title}</div>
-                      <div class="song-cell-artist">${song.artist}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>3:45</td>
+      // Get the song objects from Firebase
+      getSongsFromPlaylist(likedSongIds).then(likedSongs => {
+        if (likedSongs.length === 0) {
+          likedSongsContainer.innerHTML = '';
+          emptyMessage.style.display = 'block';
+          return;
+        }
+        
+        likedSongsContainer.innerHTML = `
+          <table class="playlist-songs">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Duration</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
+            </thead>
+            <tbody>
+              ${likedSongs.map((song, index) => `
+                <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
+                  <td class="song-number">${index + 1}</td>
+                  <td>
+                    <div class="song-cell">
+                      <div class="song-cell-img">
+                        <img src="images/${song.imageFile}" alt="${song.title}">
+                      </div>
+                      <div class="song-cell-info">
+                        <div class="song-cell-title">${song.title}</div>
+                        <div class="song-cell-artist">${song.artist}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>3:45</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }).catch(error => {
+        console.error("Error loading liked songs:", error);
+        likedSongsContainer.innerHTML = '<p>Error loading liked songs. Please try again.</p>';
+      });
     }
     
     // Recently played functionality
@@ -2166,41 +2234,66 @@
         return;
       }
       
-      // Get the song objects
-      const recentSongs = recentlyPlayedIds.map(id => songs.find(s => s.id === id)).filter(Boolean);
-      
+      // Show loading spinner
+      recentlyPlayedContainer.innerHTML = '<div class="loader"></div>';
       emptyMessage.style.display = 'none';
       
-      recentlyPlayedContainer.innerHTML = `
-        <table class="playlist-songs">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${recentSongs.map((song, index) => `
-              <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
-                <td class="song-number">${index + 1}</td>
-                <td>
-                  <div class="song-cell">
-                    <div class="song-cell-img">
-                      <img src="images/${song.imageFile}" alt="${song.title}">
-                    </div>
-                    <div class="song-cell-info">
-                      <div class="song-cell-title">${song.title}</div>
-                      <div class="song-cell-artist">${song.artist}</div>
-                    </div>
-                  </div>
-                </td>
-                <td>3:45</td>
+      // Get the song objects from Firebase
+      getSongsFromPlaylist(recentlyPlayedIds).then(recentSongs => {
+        if (recentSongs.length === 0) {
+          recentlyPlayedContainer.innerHTML = '';
+          emptyMessage.style.display = 'block';
+          return;
+        }
+        
+        recentlyPlayedContainer.innerHTML = `
+          <table class="playlist-songs">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Duration</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
+            </thead>
+            <tbody>
+              ${recentSongs.map((song, index) => `
+                <tr data-song-id="${song.id}" ${song.id === 'song8' ? 'onclick="showErrorDialog()"' : `onclick="playSong('${song.id}')"`}>
+                  <td class="song-number">${index + 1}</td>
+                  <td>
+                    <div class="song-cell">
+                      <div class="song-cell-img">
+                        <img src="images/${song.imageFile}" alt="${song.title}">
+                      </div>
+                      <div class="song-cell-info">
+                        <div class="song-cell-title">${song.title}</div>
+                        <div class="song-cell-artist">${song.artist}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>3:45</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }).catch(error => {
+        console.error("Error loading recently played songs:", error);
+        recentlyPlayedContainer.innerHTML = '<p>Error loading recently played songs. Please try again.</p>';
+      });
+    }
+    
+    // Function to create a new playlist in Firebase
+    function createPlaylist(name, description, image, songs = []) {
+      const playlistId = 'playlist-' + Date.now();
+      
+      return playlistsRef.doc(playlistId).set({
+        id: playlistId,
+        name: name,
+        description: description || 'No description',
+        image: image,
+        songs: songs,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
     }
     
     // Add playlist modal
@@ -2277,6 +2370,7 @@
       
       // Create button
       content.querySelector('#create-playlist').addEventListener('click', function() {
+        const createBtn = this;
         const name = content.querySelector('#playlist-name').value.trim();
         const description = content.querySelector('#playlist-description').value.trim();
         
@@ -2290,27 +2384,36 @@
           return;
         }
         
-        // Generate a unique ID
-        const playlistId = 'playlist-' + Date.now();
+        // Disable button and show loading state
+        createBtn.disabled = true;
+        createBtn.innerHTML = 'Creating...';
         
-        // Create the playlist object
-        const newPlaylist = {
-          id: playlistId,
-          name: name,
-          description: description || 'No description',
-          image: selectedImage,
-          songs: []
-        };
-        
-        // In a real app, we would save this to Firebase
-        // For now, we'll add it to our local array
-        defaultPlaylists.unshift(newPlaylist);
-        
-        // Reload playlists
-        loadPlaylists();
-        
-        // Close the modal
-        document.body.removeChild(overlay);
+        // Create playlist in Firebase
+        createPlaylist(name, description, selectedImage)
+          .then(() => {
+            // Success - playlist will appear via the real-time listener
+            document.body.removeChild(overlay);
+          })
+          .catch(error => {
+            console.error("Error creating playlist:", error);
+            alert("Error creating playlist. Please try again.");
+            createBtn.disabled = false;
+            createBtn.innerHTML = 'Create';
+          });
+      });
+    }
+    
+    // Function to add a song to a playlist
+    function addSongToPlaylist(playlistId, songId) {
+      return playlistsRef.doc(playlistId).update({
+        songs: firebase.firestore.FieldValue.arrayUnion(songId)
+      });
+    }
+    
+    // Function to remove a song from a playlist
+    function removeSongFromPlaylist(playlistId, songId) {
+      return playlistsRef.doc(playlistId).update({
+        songs: firebase.firestore.FieldValue.arrayRemove(songId)
       });
     }
   </script>
