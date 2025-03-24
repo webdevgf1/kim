@@ -3561,31 +3561,36 @@
         }
 
         function addMemeNavLink() {
-  const nav = document.querySelector('nav');
-  const mapLink = document.getElementById('map-link');
+    // Check if the link already exists first
+    if (document.getElementById('meme-link')) {
+        return; // Stop here if the link already exists
+    }
   
-  // Create meme generator link element
-  const memeLink = document.createElement('a');
-  memeLink.href = "#";
-  memeLink.className = "nav-link";
-  memeLink.id = "meme-link";
-  memeLink.innerHTML = `
-    <span class="icon"><i class="fas fa-image"></i></span>
-    <span>Meme Generator</span>
-  `;
-  
-  // Check if map link exists, and insert after it or after wrapped link
-  if (mapLink) {
-    nav.insertBefore(memeLink, mapLink.nextSibling);
-  } else {
-    const wrappedLink = document.getElementById('wrapped-link');
-    nav.insertBefore(memeLink, wrappedLink.nextSibling);
-  }
-  
-  // Add event listener for meme link
-  memeLink.addEventListener('click', function() {
-    showMemeModal();
-  });
+    const nav = document.querySelector('nav');
+    const mapLink = document.getElementById('map-link');
+    
+    // Create meme generator link element
+    const memeLink = document.createElement('a');
+    memeLink.href = "#";
+    memeLink.className = "nav-link";
+    memeLink.id = "meme-link";
+    memeLink.innerHTML = `
+      <span class="icon"><i class="fas fa-image"></i></span>
+      <span>Meme Generator</span>
+    `;
+    
+    // Check if map link exists, and insert after it or after wrapped link
+    if (mapLink) {
+      nav.insertBefore(memeLink, mapLink.nextSibling);
+    } else {
+      const wrappedLink = document.getElementById('wrapped-link');
+      nav.insertBefore(memeLink, wrappedLink.nextSibling);
+    }
+    
+    // Add event listener for meme link
+    memeLink.addEventListener('click', function() {
+      showMemeModal();
+    });
 }
 
 // Function to show the meme generator modal
@@ -3829,6 +3834,11 @@ function initMemeGenerator() {
 }
 
 function addMapNavLink() {
+    // Check if the link already exists first
+    if (document.getElementById('map-link')) {
+        return; // Stop here if the link already exists
+    }
+    
     const nav = document.querySelector('nav');
     const wrappedLink = document.getElementById('wrapped-link');
     
@@ -3849,7 +3859,7 @@ function addMapNavLink() {
     mapLink.addEventListener('click', function() {
       showMapModal();
     });
-  }
+}
   
   // Function to show the map modal
   function showMapModal() {
@@ -4080,28 +4090,6 @@ function addMapNavLink() {
       }
     }, 3000);
   }
-  
-  // Add initialization functions to document ready event
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addMapNavLink);
-  } else {
-    addMapNavLink();
-  }
-
-// Add initialization function for meme generator
-document.addEventListener('DOMContentLoaded', function() {
-  addMemeNavLink();
-  
-  // Add meme modal to the DOM
-  if (!document.getElementById('meme-modal')) {
-    const memeModal = document.createElement('div');
-    memeModal.id = 'meme-modal';
-    memeModal.className = 'modal-overlay';
-    memeModal.style.display = 'none';
-    memeModal.innerHTML = document.querySelector('#meme-modal-template').innerHTML;
-    document.body.appendChild(memeModal);
-  }
-});
     </script>
     <div id="meme-modal" class="modal-overlay" style="display: none;">
         <div class="meme-modal-content">
