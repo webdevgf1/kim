@@ -3544,54 +3544,67 @@
               // 1. Upload the image to Supabase Storage
               const filename = `cover-${Date.now()}.png`;
               
-              const { data: uploadData, error: uploadError } = await supabase
-                .storage
-                .from('playlist-covers')
-                .upload(filename, uploadedImage);
-              
-              if (uploadError) throw uploadError;
-              
-              // 2. Get the public URL for the uploaded image
-              const { data: { publicUrl } } = supabase
-                .storage
-                .from('playlist-covers')
-                .getPublicUrl(filename);
-              
-              // 3. Create a new playlist record
-              const playlistData = {
-                name: name,
-                description: description || 'No description',
-                image_url: publicUrl,
-                songs: selectedSongs,
-                is_user_created: true,
-                created_at: new Date().toISOString()
-              };
-              
-              const { data: playlist, error: insertError } = await supabase
-                .from('playlists')
-                .insert(playlistData)
-                .select()
-                .single();
-              
-              if (insertError) throw insertError;
-              
-              // 4. Reload playlists
-              await loadPlaylists();
-              
-              // 5. Close the modal
-              document.body.removeChild(overlay);
-              
-              // 6. Show the new playlist
-              loadPlaylistView(playlist.id);
-              
-            } catch (error) {
-              console.error('Error creating playlist:', error);
-              alert('An error occurred while creating the playlist. Please try again.');
-              
-              // Reset button state
-              createBtn.textContent = originalBtnText;
-              createBtn.disabled = false;
-            }
+              try {
+  // 1. Upload the image to Supabase Storage
+  const filename = `cover-${Date.now()}.png`;
+  
+  const { data: uploadData, error: uploadError } = await supabase
+    .storage
+    .from('playlist-covers')
+    .upload(filename, uploadedImage, {
+      cacheControl: '3600',
+      upsert: false
+    });
+  
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    throw uploadError;
+  }
+  
+  // 2. Get the public URL for the uploaded image
+  const { data: { publicUrl } } = supabase
+    .storage
+    .from('playlist-covers')
+    .getPublicUrl(filename);
+  
+  // 3. Create a new playlist record
+  const playlistData = {
+    name: name,
+    description: description || 'No description',
+    image_url: publicUrl,
+    songs: selectedSongs,
+    is_user_created: true,
+    created_at: new Date().toISOString()
+  };
+  
+  const { data: playlist, error: insertError } = await supabase
+    .from('playlists')
+    .insert(playlistData)
+    .select()
+    .single();
+  
+  if (insertError) {
+    console.error('Insert error:', insertError);
+    throw insertError;
+  }
+  
+  // 4. Reload playlists
+  await loadPlaylists();
+  
+  // 5. Close the modal
+  document.body.removeChild(overlay);
+  
+  // 6. Show the new playlist
+  loadPlaylistView(playlist.id);
+  
+} catch (error) {
+  console.error('Error creating playlist:', error);
+  alert('Error creating playlist: ' + error.message);
+  
+  // Reset button state
+  createBtn.textContent = originalBtnText;
+  createBtn.disabled = false;
+}
           });
         }
 
