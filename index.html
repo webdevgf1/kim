@@ -3512,89 +3512,107 @@
           
           // Create button
           content.querySelector('#create-playlist').addEventListener('click', async function() {
-            const name = content.querySelector('#playlist-name').value.trim();
-            const description = content.querySelector('#playlist-description').value.trim();
-            
-            // Validation
-            if (!name) {
-              alert('Please enter a playlist name');
-              return;
-            }
-            
-            if (!uploadedImage) {
-              alert('Please upload a cover image');
-              return;
-            }
-            
-            // Get selected songs
-            const selectedSongs = Array.from(content.querySelectorAll('.song-selection-tile.selected'))
-              .map(tile => tile.dataset.songId);
-            
-            if (selectedSongs.length === 0) {
-              alert('Please select at least one song');
-              return;
-            }
-            
-            // Show loading state
-            const createBtn = content.querySelector('#create-playlist');
-            const originalBtnText = createBtn.textContent;
-            createBtn.textContent = 'Creating...';
-            createBtn.disabled = true;
-            
-            try {
-              // 1. Upload the image to Supabase Storage
-              const filename = `cover-${Date.now()}.png`;
-              
-              const { data: uploadData, error: uploadError } = await supabase
-                .storage
-                .from('playlist-covers')
-                .upload(filename, uploadedImage);
-              
-              if (uploadError) throw uploadError;
-              
-              // 2. Get the public URL for the uploaded image
-              const { data: { publicUrl } } = supabase
-                .storage
-                .from('playlist-covers')
-                .getPublicUrl(filename);
-              
-              // 3. Create a new playlist record
-              const playlistData = {
-                name: name,
-                description: description || 'No description',
-                image_url: publicUrl,
-                songs: selectedSongs,
-                is_user_created: true,
-                created_at: new Date().toISOString()
-              };
-              
-              const { data: playlist, error: insertError } = await supabase
-                .from('playlists')
-                .insert(playlistData)
-                .select()
-                .single();
-              
-              if (insertError) throw insertError;
-              
-              // 4. Reload playlists
-              await loadPlaylists();
-              
-              // 5. Close the modal
-              document.body.removeChild(overlay);
-              
-              // 6. Show the new playlist
-              loadPlaylistView(playlist.id);
-              
-            } catch (error) {
-              console.error('Error creating playlist:', error);
-              alert('An error occurred while creating the playlist. Please try again.');
-              
-              // Reset button state
-              createBtn.textContent = originalBtnText;
-              createBtn.disabled = false;
-            }
-          });
-        }
+  const name = content.querySelector('#playlist-name').value.trim();
+  const description = content.querySelector('#playlist-description').value.trim();
+  
+  // Validation
+  if (!name) {
+    alert('Please enter a playlist name');
+    return;
+  }
+  
+  if (!uploadedImage) {
+    alert('Please upload a cover image');
+    return;
+  }
+  
+  // Get selected songs
+  const selectedSongs = Array.from(content.querySelectorAll('.song-selection-tile.selected'))
+    .map(tile => tile.dataset.songId);
+  
+  if (selectedSongs.length === 0) {
+    alert('Please select at least one song');
+    return;
+  }
+  
+  // Show loading state
+  const createBtn = content.querySelector('#create-playlist');
+  const originalBtnText = createBtn.textContent;
+  createBtn.textContent = 'Creating...';
+  createBtn.disabled = true;
+  
+  try {
+    // 1. Create a simple filename
+    const fileExt = uploadedImage.name.split('.').pop() || 'png';
+    const filename = `playlist-${Date.now()}.${fileExt}`;
+    
+    console.log('Uploading file:', filename);
+    
+    // 2. Upload the image to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase
+      .storage
+      .from('playlist-covers')
+      .upload(filename, uploadedImage, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: uploadedImage.type
+      });
+    
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      throw new Error(`Upload failed: ${uploadError.message}`);
+    }
+    
+    console.log('Upload successful:', uploadData);
+    
+    // 3. Get the public URL
+    const { data: { publicUrl } } = supabase
+      .storage
+      .from('playlist-covers')
+      .getPublicUrl(filename);
+    
+    console.log('Public URL:', publicUrl);
+    
+    // 4. Create playlist record
+    const playlistData = {
+      name: name,
+      description: description || 'No description',
+      image_url: publicUrl,
+      songs: selectedSongs,
+      is_user_created: true
+    };
+    
+    console.log('Creating playlist with data:', playlistData);
+    
+    const { data: playlist, error: insertError } = await supabase
+      .from('playlists')
+      .insert(playlistData)
+      .select()
+      .single();
+    
+    if (insertError) {
+      console.error('Insert error:', insertError);
+      throw new Error(`Database insert failed: ${insertError.message}`);
+    }
+    
+    console.log('Playlist created successfully:', playlist);
+    
+    // 5. Success actions
+    await loadPlaylists();
+    document.body.removeChild(overlay);
+    loadPlaylistView(playlist.id);
+    
+    alert('Playlist created successfully!');
+    
+  } catch (error) {
+    console.error('Error creating playlist:', error);
+    alert(`Error: ${error.message}`);
+    
+    // Reset button state
+    createBtn.textContent = originalBtnText;
+    createBtn.disabled = false;
+  }
+});
 
         // Function to animate the stats when viewing the wrapped
         function animateWrappedStats() {
