@@ -2366,8 +2366,10 @@
       <!-- Audio element to handle actual playback -->
       <audio id="audio-player" src=""></audio>
       
-      <!-- Supabase JS Library -->
-      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
       <script>
           // Prevent text selection to avoid flickering
           document.addEventListener('mousedown', function(e) {
@@ -2377,9 +2379,20 @@
           }, false);
           
           // Initialize Supabase Client - Replace with your actual project values
-          const supabaseUrl = 'https://dpshybweybfbruydpaib.supabase.co';
-          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwc2h5YndleWJmYnJ1eWRwYWliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3Nzk4MDYsImV4cCI6MjA1ODM1NTgwNn0.SRslJgPsnIgSbIKLDtTALj22sFNoIM2_8EN9zaHXX4k'; // Get this from your Supabase project settings
-          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+          // Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDemoKey-Replace-With-Your-Key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
           // Mock data for songs
         const songs = [
           { 
@@ -2577,48 +2590,42 @@
         }
         // Function to load playlists
         async function loadPlaylists() {
-          const playlistsContainer = document.getElementById('playlists-container');
-          
-          // Show loading indicator
-          playlistsContainer.innerHTML = '<div class="loader"></div>';
-          
-          try {
-            // Get user-created playlists from Supabase
-            const { data: userPlaylists, error } = await supabase
-              .from('playlists')
-              .select('*')
-              .order('created_at', { ascending: false });
-            
-            if (error) throw error;
-            
-            // Combine with default playlists
-            const allPlaylists = [...defaultPlaylists];
-            
-            // Add user playlists if any were returned
-            if (userPlaylists && userPlaylists.length > 0) {
-              allPlaylists.push(...userPlaylists);
-            }
-            
-            playlistsContainer.innerHTML = '';
-            
-            allPlaylists.forEach(playlist => {
-              const li = document.createElement('li');
-              li.dataset.playlistId = playlist.id;
-              li.onclick = () => loadPlaylistView(playlist.id);
-              
-              const imageUrl = playlist.is_user_created 
-                ? playlist.image_url // Use URL for user-created playlists
-                : `images/${playlist.image}`; // Use local path for default playlists
-              
-              li.innerHTML = `
-                <img src="${imageUrl}" alt="${playlist.name}" class="playlist-mini-img">
-                ${playlist.name}
-              `;
-              
-              playlistsContainer.appendChild(li);
-            });
-          } catch (error) {
-            console.error('Error loading playlists:', error);
+  const playlistsContainer = document.getElementById('playlists-container');
+  
+  // Show loading
+  playlistsContainer.innerHTML = '<div class="loader"></div>';
+  
+  try {
+    // Get user playlists from Firebase
+    const snapshot = await db.collection('playlists').orderBy('created_at', 'desc').get();
+    const userPlaylists = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // Combine with default playlists
+    const allPlaylists = [...defaultPlaylists, ...userPlaylists];
+    
+    playlistsContainer.innerHTML = '';
+    
+    allPlaylists.forEach(playlist => {
+      const li = document.createElement('li');
+      li.dataset.playlistId = playlist.id;
+      li.onclick = () => loadPlaylistView(playlist.id);
+      
+      const imageUrl = playlist.is_user_created 
+        ? playlist.image_url 
+        : `images/${playlist.image}`;
+      
+      li.innerHTML = `
+        <img src="${imageUrl}" alt="${playlist.name}" class="playlist-mini-img">
+        ${playlist.name}
+      `;
+      
+      playlistsContainer.appendChild(li);
+    });
+  } catch (error) {
+    console.error('Error loading playlists:', error);
             
             // Fallback to just loading default playlists
             setTimeout(() => {
@@ -3541,57 +3548,36 @@
             createBtn.disabled = true;
             
             try {
-              // 1. Upload the image to Supabase Storage
-              const filename = `cover-${Date.now()}.png`;
-              
-              const { data: uploadData, error: uploadError } = await supabase
-                .storage
-                .from('playlist-covers')
-                .upload(filename, uploadedImage);
-              
-              if (uploadError) throw uploadError;
-              
-              // 2. Get the public URL for the uploaded image
-              const { data: { publicUrl } } = supabase
-                .storage
-                .from('playlist-covers')
-                .getPublicUrl(filename);
-              
-              // 3. Create a new playlist record
-              const playlistData = {
-                name: name,
-                description: description || 'No description',
-                image_url: publicUrl,
-                songs: selectedSongs,
-                is_user_created: true,
-                created_at: new Date().toISOString()
-              };
-              
-              const { data: playlist, error: insertError } = await supabase
-                .from('playlists')
-                .insert(playlistData)
-                .select()
-                .single();
-              
-              if (insertError) throw insertError;
-              
-              // 4. Reload playlists
-              await loadPlaylists();
-              
-              // 5. Close the modal
-              document.body.removeChild(overlay);
-              
-              // 6. Show the new playlist
-              loadPlaylistView(playlist.id);
-              
-            } catch (error) {
-              console.error('Error creating playlist:', error);
-              alert('An error occurred while creating the playlist. Please try again.');
-              
-              // Reset button state
-              createBtn.textContent = originalBtnText;
-              createBtn.disabled = false;
-            }
+  // 1. Upload image to Firebase Storage
+  const fileRef = storage.ref().child(`playlist-covers/${Date.now()}-${uploadedImage.name}`);
+  const uploadTask = await fileRef.put(uploadedImage);
+  const downloadURL = await uploadTask.ref.getDownloadURL();
+  
+  // 2. Create playlist document
+  const playlistData = {
+    name: name,
+    description: description || 'No description',
+    image_url: downloadURL,
+    songs: selectedSongs,
+    is_user_created: true,
+    created_at: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  
+  const docRef = await db.collection('playlists').add(playlistData);
+  
+  // 3. Success actions
+  await loadPlaylists();
+  document.body.removeChild(overlay);
+  loadPlaylistView(docRef.id);
+  
+} catch (error) {
+  console.error('Error creating playlist:', error);
+  alert('Error creating playlist: ' + error.message);
+  
+  // Reset button state
+  createBtn.textContent = originalBtnText;
+  createBtn.disabled = false;
+}
           });
         }
 
