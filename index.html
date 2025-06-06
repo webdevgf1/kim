@@ -2785,39 +2785,39 @@ const storage = firebase.storage();
         }
         // Function to load a specific playlist view
         async function loadPlaylistView(playlistId) {
-          // Check if it's a default playlist
-          const defaultPlaylist = defaultPlaylists.find(p => p.id === playlistId);
-          
-          if (defaultPlaylist) {
-            // Handle default playlist
-            const playlistSongs = defaultPlaylist.songs.map(songId => 
-              songs.find(s => s.id === songId)
-            ).filter(Boolean);
-            
-            displayPlaylist(defaultPlaylist, playlistSongs);
-          } else {
-            // It's a user-created playlist, fetch from Supabase
-            try {
-              const { data: playlist, error } = await supabase
-                .from('playlists')
-                .select('*')
-                .eq('id', playlistId)
-                .single();
-              
-              if (error) throw error;
-              
-              // Get the songs
-              const playlistSongs = playlist.songs.map(songId => 
-                songs.find(s => s.id === songId)
-              ).filter(Boolean);
-              
-              displayPlaylist(playlist, playlistSongs);
-            } catch (error) {
-              console.error('Error loading playlist:', error);
-              alert('An error occurred while loading the playlist. Please try again.');
-            }
-          }
-        }
+  // Check if it's a default playlist
+  const defaultPlaylist = defaultPlaylists.find(p => p.id === playlistId);
+  
+  if (defaultPlaylist) {
+    // Handle default playlist
+    const playlistSongs = defaultPlaylist.songs.map(songId => 
+      songs.find(s => s.id === songId)
+    ).filter(Boolean);
+    
+    displayPlaylist(defaultPlaylist, playlistSongs);
+  } else {
+    // It's a user-created playlist, fetch from Firebase
+    try {
+      const doc = await db.collection('playlists').doc(playlistId).get();
+      
+      if (!doc.exists) {
+        throw new Error('Playlist not found');
+      }
+      
+      const playlist = { id: doc.id, ...doc.data() };
+      
+      // Get the songs
+      const playlistSongs = playlist.songs.map(songId => 
+        songs.find(s => s.id === songId)
+      ).filter(Boolean);
+      
+      displayPlaylist(playlist, playlistSongs);
+    } catch (error) {
+      console.error('Error loading playlist:', error);
+      alert('An error occurred while loading the playlist. Please try again.');
+    }
+  }
+}
         
         // Helper function to display a playlist
         function displayPlaylist(playlist, playlistSongs) {
